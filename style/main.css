@@ -10,8 +10,9 @@ html {
 html {
     font-size: 100%;
 }
+
 html::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 body {
@@ -51,15 +52,17 @@ nav #utility-container {
     max-width: 4.375rem;
     aspect-ratio: 1 / 1;
 }
-#account-svg.active{
+
+#account-svg.active {
     filter: hue-rotate(120deg)
 }
+
 #hamburger-svg {
-        padding-right: 0.625rem;
-    }
+    padding-right: 0.625rem;
+}
 
 #hamburger-nav {
-    position:absolute;
+    position: absolute;
     top: 5rem;
     right: -9.375rem;
     margin: 0;
@@ -73,12 +76,12 @@ nav #utility-container {
     transition: 500ms ease-out;
 }
 
-#hamburger-nav.show{
+#hamburger-nav.show {
     max-height: fit-content;
-    max-width:fit-content;
-    right:-10px;
-        padding: 0.625rem;
-        margin: 0;
+    max-width: fit-content;
+    right: -10px;
+    padding: 0.625rem;
+    margin: 0;
 }
 
 #hamburger-nav:active {
@@ -138,7 +141,7 @@ main #product-scroller {
     padding: 0.625rem;
 }
 
-#product-scroller .product-card {
+.product-card {
     min-width: 0;
     min-height: 11.25rem;
     background-color: #ccc;
@@ -147,21 +150,40 @@ main #product-scroller {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    padding: 1.25rem;
+    padding: 0 1.25rem;
+    padding-top: 1rem;
     justify-content: center;
 }
 
-.product-card img {
+.product-image {
     max-height: 9.375rem;
     aspect-ratio: 1 / 1;
     width: auto;
     border: black 1px solid;
     margin: 0 1.25rem;
     justify-self: center;
-
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #eaeaea;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
 
-.product-card .product-details {
+
+@media(hover:hover) {
+    .product-image:hover {
+        transform: scale(1.03) translateY(-8px);
+
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+            0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+        border-color: #d1d1d1;
+    }
+}
+
+.product-details {
     display: flex;
     flex-direction: column;
     align-items: start;
@@ -169,32 +191,85 @@ main #product-scroller {
     min-height: 9.375rem;
     min-width: 9rem;
     flex: 1 1 9rem;
-    margin: 0 0.9375rem;
+    margin: 5px 0.9375rem;
 }
 
-.product-details .product-name {
+.product-name {
     max-width: 90%;
     font-size: 1.25rem;
     font-weight: bold;
     color: #3795b4;
 }
 
-.product-details .product-price {
+.product-price {
     max-width: 30%;
     font-size: 1.125rem;
     color: #000;
 }
 
-.product-details .product-size-container {
-    width: 50%;
-    height: 1.875rem;
+.product-size-container {
     background-color: #ccc;
     font-size: 1rem;
     color: #000;
     margin: 0.625rem 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 1.2rem;
+
+}
+
+.product-size-container-size {
+    /* Senior Clean-up: Switched to equal dimensions for a perfect square/circle */
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #333;
+
+    border: 1px solid #ccc;
+    /* Softer border than pure black */
+    border-radius: 6px;
+    /* Clean modern radius */
+    background-color: #ffffff;
+
+    /* Modern Soft Shadow */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+
+
+@media(hover: hover) {
+    .product-size-container-size:hover {
+        background-color: #add8e6;
+        cursor: pointer;
+        border: 1px solid black;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
+        transform: scale(1.2);
+        /* Gently lifts the button up */
+
+    }
+
+
+}
+
+.product-size-container-size:active {
+    transform: translateY(1px);
+    /* Pushes the button down */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    /* Flattens shadow to feel pressed */
 }
 
 .add-to.basket {
+    margin: auto;
     width: 90%;
     min-height: 1.5rem;
     padding: 0.3125rem 0.625rem;
@@ -203,16 +278,20 @@ main #product-scroller {
     font-size: 1rem;
     border: none;
     cursor: pointer;
+    border-radius: 5px;
 }
 
 @media(hover: hover) {
     .add-to.basket:hover {
-        background-color: lightgreen;
+        background-color: #00aa00;
+        transform: scale(1.05);
     }
 }
 
 .add-to.basket:active {
-    background-color: darkgreen;
+    background-color: white;
+    color: green;
+    border: 1px solid green;
 }
 
 footer {
@@ -231,7 +310,7 @@ footer {
 }
 
 footer #footer-content {
-        min-height: 18.75rem;
+    min-height: 18.75rem;
     box-sizing: border-box;
     flex: 2;
     background-color: #333;
@@ -253,7 +332,7 @@ footer #contact {
     margin-bottom: 1.25rem;
 }
 
-footer h1{
+footer h1 {
     margin: 10px 0;
     font-size: 1.5rem;
 }
@@ -315,12 +394,12 @@ footer h1{
     text-decoration: none;
     padding: 0 5%;
 }
-@media (hover:hover)
-{
-    #policies a:hover{
+
+@media (hover:hover) {
+    #policies a:hover {
         text-decoration: underline;
         color: lightblue;
-}
+    }
 }
 
 
@@ -331,41 +410,43 @@ footer h1{
     background-color: #666;
 
 }
-/* Isolate the tap property completely so no other styles interfere */
-* {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
-}
+
 @media (min-width: 48rem) {
     #hamburger-nav {
-        position:static;
-        border-radius:0;
+        position: static;
+        border-radius: 0;
         max-height: fit-content;
         padding: 1.25rem;
         margin: 0;
         flex-direction: row;
     }
+
     #hamburger-svg {
         display: none;
     }
-    #hamburger-nav ul{
+
+    #hamburger-nav ul {
         flex-direction: row;
         width: 100%;
     }
-    #hamburger-nav ul li{
+
+    #hamburger-nav ul li {
         max-width: 100px;
     }
-    #account-svg{
+
+    #account-svg {
         margin-right: 20px;
     }
-    main #product-scroller{
+
+    main #product-scroller {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .product-card{
+    .product-card {
         padding: 1.25rem;
     }
 
-    .product-card img{
+    .product-card img {
         max-height: 12.5rem;
     }
 }
