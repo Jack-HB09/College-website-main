@@ -150,17 +150,16 @@ main #product-scroller {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    padding: 0 1.25rem;
-    padding-top: 1rem;
+    padding: 0 0.5rem;
+    padding-top: 0.25rem;
     justify-content: center;
 }
 
 .product-image {
-    max-height: 9.375rem;
-    aspect-ratio: 1 / 1;
-    width: auto;
+    height: auto;
+    aspect-ratio: 9 / 16 !important;
+    width: 9rem;
     border: black 1px solid;
-    margin: 0 1.25rem;
     justify-self: center;
     background: #ffffff;
     border-radius: 12px;
@@ -195,7 +194,7 @@ main #product-scroller {
 }
 
 .product-name {
-    max-width: 90%;
+    width: 100%;
     font-size: 1.25rem;
     font-weight: bold;
     color: #3795b4;
@@ -411,7 +410,7 @@ footer h1 {
 
 }
 
-@media (min-width: 48rem) {
+@media (min-width: 660px) {
     #hamburger-nav {
         position: static;
         border-radius: 0;
@@ -443,7 +442,7 @@ footer h1 {
     }
 
     .product-card {
-        padding: 1.25rem;
+        padding: 0.5rem;
     }
 
     .product-card img {
