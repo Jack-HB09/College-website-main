@@ -25,17 +25,17 @@ function makeMessageTile(JSON_object) {
     const contentEl = document.createElement("p");
     contentEl.className = "message-content";
 
+    const TimerEl = document.createElement("div");
+    TimerEl.className - "message-Timer"
+
     const textContainer = document.createElement("div");
     textContainer.className = "message-text";
 
-
-
     textContainer.appendChild(titleEl);
     textContainer.appendChild(contentEl);
-
     tile.appendChild(img);
     tile.appendChild(textContainer);
-    tile.appendChild(contentEl);
+    tile.appendChild(TimerEl);
 
     console.log(tile)
 
