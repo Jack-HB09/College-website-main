@@ -82,7 +82,10 @@ class MessageNotification {
     }
 
     populateTile(tile) {
-        const type = messageTypes[this.message.type] ?? { colour: "#666", icon: "" };
+        const type = messageTypes[this.message.type] ?? {
+            colour: "#666",
+            icon: "images/messageicons/info.svg"
+        };
         const duration = this.message.duration ?? 3000;
 
         tile.style.setProperty("--message-color", type.colour);
@@ -156,27 +159,87 @@ const testMessages = [
     {
         type: "info",
         title: "Information",
-        content: "This is a test information message.",
+        content: "A new update is available.",
         duration: 3000
     },
     {
         type: "success",
         title: "Success",
-        content: "This is a test success message.",
+        content: "Your profile has been updated successfully.",
         duration: 3000
     },
     {
         type: "warning",
-        title: "Warning",
-        content: "This is a test warning message.",
-        duration: 3000
+        title: "Low Storage",
+        content: "You are running out of storage space.",
+        duration: 5000
     },
     {
         type: "error",
-        title: "Error",
-        content: "This is a test error message.",
+        title: "Connection Failed",
+        content: "Unable to connect to the server.",
+        duration: 5000
+    },
+
+    // Edge Cases
+    {
+        type: "info",
+        title: "",
+        content: "Message without a title.",
         duration: 3000
+    },
+    {
+        type: "success",
+        title: "Empty Content",
+        content: "",
+        duration: 3000
+    },
+    {
+        type: "warning",
+        title: "Very Long Message",
+        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        duration: 8000
+    },
+    {
+        type: "error",
+        title: "Instant Dismiss",
+        content: "This should disappear almost immediately.",
+        duration: 100
+    },
+
+    // Confirmation Messages
+    {
+        mode: "confirmation",
+        type: "warning",
+        title: "Delete File",
+        content: "Are you sure you want to delete this file?",
+        confirmText: "Delete",
+        cancelText: "Keep"
+    },
+    {
+        mode: "confirmation",
+        type: "error",
+        title: "Sign Out",
+        content: "Do you want to sign out of your account?",
+        confirmText: "Sign Out",
+        cancelText: "Stay Logged In"
+    },
+    {
+        mode: "confirmation",
+        type: "info",
+        title: "Save Changes",
+        content: "Would you like to save before closing?",
+        confirmText: "Save",
+        cancelText: "Discard"
     }
 ];
 
-testMessages.forEach(message => new MessageNotification(message).show());
+testMessages.forEach(message => {
+    const notification = new MessageNotification(message).show();
+
+    if (message.mode === "confirmation") {
+        notification.response.then(result => {
+            console.log(`${message.title}:`, result);
+        });
+    }
+});
