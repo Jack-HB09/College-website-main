@@ -1,73 +1,134 @@
 #message {
     position: fixed;
-    top: 20px;
+    top: 16px;
     left: 50%;
     transform: translateX(-50%);
     width: 500px;
-    max-width: 90%;
+    max-width: calc(100vw - 32px);
     z-index: 1000;
-
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
 }
 
 @keyframes messageProgress {
     from {
-        width: 100%
+        transform: scaleX(1);
     }
 
     to {
-        width: 0
+        transform: scaleX(0);
     }
-
 }
 
 .message-tile {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    grid-template-rows: auto auto;
     align-items: center;
-    gap: 15px;
-
-    background: white;
-    border-left: 6px solid #2196f3;
+    gap: 12px 14px;
+    box-sizing: border-box;
+    padding: 16px 18px 13px;
+    background: #fff;
+    border-left: 5px solid var(--message-color, #666);
     border-radius: 12px;
-
-    padding: 16px 20px;
-    margin-bottom: 10px;
-
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-
-    animation: slideDown 0.3s ease;
+    box-shadow: 0 8px 24px rgba(20, 30, 45, 0.18);
+    pointer-events: auto;
+    animation: messageEnter 0.25s ease-out both;
 }
 
-.message-tile>img {
-    width: 40px;
-    height: 40px;
+@keyframes messageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-tile > img {
+    grid-column: 1;
+    grid-row: 1;
+    width: 38px;
+    height: 38px;
 }
 
 .message-text {
-
+    grid-column: 2;
+    grid-row: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    flex: 1;
     min-width: 0;
 }
 
 .message-title {
     margin: 0;
-    font-size: 1.1rem;
-    color: #222;
-    width: 100%;
+    color: #20242a;
+    font-size: 1rem;
+    font-weight: 650;
+    line-height: 1.35;
 }
 
 .message-content {
-    margin: 4px 0 0;
-    color: #555;
-    width: 100%;
+    margin: 3px 0 0;
+    color: #59616b;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
 }
 
 .message-Timer {
-    flex-basis: 100%;
-    height: 3px;
-    background-color: green;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    height: 4px;
+    border-radius: 999px;
+    transform-origin: left;
     animation: messageProgress var(--message-duration) linear forwards;
+}
+
+.message-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.message-button {
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 7px;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.message-button:focus-visible {
+    outline: 3px solid #20242a;
+    outline-offset: 2px;
+}
+
+.message-button-cancel {
+    background: #eef0f3;
+    color: #303640;
+}
+
+.message-button-confirm {
+    background: var(--message-color, #666);
+    color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .message-tile {
+        animation: none;
+    }
+
+    .message-Timer {
+        animation: none;
+    }
 }
