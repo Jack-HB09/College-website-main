@@ -1,3 +1,4 @@
+
 #message {
     position: fixed;
     top: 16px;
@@ -21,7 +22,19 @@
         transform: scaleX(0);
     }
 }
-
+@media (max-width: 600px){
+    #message {
+        position: fixed;
+        top: auto;
+        right: max(16px, env(safe-area-inset-right));
+        bottom: max(16px, env(safe-area-inset-bottom));
+        left: auto;
+        transform: none;
+        width: min(500px, calc(100vw - 32px));
+        max-width: calc(100vw - 32px);
+        flex-direction: column-reverse;
+    }
+}
 .message-tile {
     display: grid;
     grid-template-columns: 42px minmax(0, 1fr);
@@ -37,6 +50,7 @@
     pointer-events: auto;
     animation: messageEnter 0.25s ease-out both;
 }
+
 
 @keyframes messageEnter {
     from {
@@ -121,6 +135,36 @@
 .message-button-confirm {
     background: var(--message-color, #666);
     color: #fff;
+}
+
+.message-tile-sticky {
+    grid-template-columns: 42px minmax(0, 1fr) 32px;
+}
+
+.message-tile-sticky .message-dismiss {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: start;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #eef0f3;
+    color: #303640;
+    font: inherit;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.message-tile-sticky .message-dismiss:hover {
+    background: #dfe3e8;
+}
+
+.message-tile-sticky .message-dismiss:focus-visible {
+    outline: 3px solid var(--message-color, #666);
+    outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

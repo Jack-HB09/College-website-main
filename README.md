@@ -3,8 +3,9 @@ just a small website that i am making whiel learning webdevelop ment. wil try to
 
 ## Notifications
 
-Create a `MessageNotification` with `mode: "duration"` to dismiss it automatically, or
-`mode: "confirmation"` to wait for the user to choose an action:
+Create a `MessageNotification` with `mode: "duration"` to dismiss it automatically,
+`mode: "confirmation"` to wait for a choice, or `mode: "sticky"` to keep it visible
+until the user closes it:
 
 ```js
 const confirmation = new MessageNotification({
@@ -21,8 +22,16 @@ confirmation.response.then(confirmed => {
         // Perform the confirmed action.
     }
 });
+
+const sticky = new MessageNotification({
+    mode: "sticky",
+    type: "info",
+    title: "Still working",
+    content: "Dismiss this when you are ready."
+}).show();
 ```
 
 Confirmation responses are `true` for confirm, `false` for cancel, and `null` if
-the notification is removed programmatically. Timed notifications use `duration`
-in milliseconds and default to 3000 ms.
+the notification is removed programmatically. Sticky notifications can also be
+removed in code with `sticky.remove()`. Timed notifications use `duration` in
+milliseconds and default to 3000 ms.

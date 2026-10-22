@@ -62,9 +62,9 @@ nav #utility-container {
 }
 
 #hamburger-nav {
-    position: absolute;
+    position: fixed;
     top: 5rem;
-    right: -9.375rem;
+    right: 0.625rem;
     margin: 0;
     background-color: rgba(102, 102, 102, 70%);
     border-radius: 10px;
@@ -73,13 +73,20 @@ nav #utility-container {
     border-color: #add8e6;
     box-shadow: #000;
     box-sizing: border-box;
-    transition: 500ms ease-out;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-0.5rem);
+    transition: opacity 200ms ease, transform 200ms ease, visibility 200ms;
 }
 
 #hamburger-nav.show {
     max-height: fit-content;
     max-width: fit-content;
-    right: -10px;
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
     padding: 0.625rem;
     margin: 0;
 }

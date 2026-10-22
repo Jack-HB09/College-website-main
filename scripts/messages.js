@@ -20,7 +20,7 @@ const messageTypes = {
 class MessageNotification {
     constructor(message, container = document.getElementById("message")) {
         const mode = message.mode ?? "duration";
-        if (mode !== "duration" && mode !== "confirmation") {
+        if (mode !== "duration" && mode !== "confirmation" && mode !== "sticky") {
             throw new TypeError(`Unsupported notification mode: ${mode}`);
         }
 
@@ -57,7 +57,7 @@ class MessageNotification {
             timer.className = "message-Timer";
             tile.append(timer);
             this.elements.timer = timer;
-        } else {
+        }else if (this.mode === "confirmation") {
             const actions = document.createElement("div");
             actions.className = "message-actions";
 
@@ -76,6 +76,17 @@ class MessageNotification {
             this.elements.actions = actions;
             this.elements.cancelButton = cancelButton;
             this.elements.confirmButton = confirmButton;
+        } else if (this.mode === "sticky") {
+            tile.classList.add("message-tile-sticky");
+
+            const dismissButton = document.createElement("button");
+            dismissButton.className = "message-dismiss";
+            dismissButton.type = "button";
+            dismissButton.setAttribute("aria-label", this.message.dismissLabel ?? "Dismiss notification");
+            dismissButton.textContent = "\u00d7";
+
+            tile.append(dismissButton);
+            this.elements.dismissButton = dismissButton;
         }
 
         return tile;
@@ -119,12 +130,14 @@ class MessageNotification {
         if (this.mode === "duration") {
             const duration = this.message.duration ?? 3000;
             this.timeoutId = setTimeout(() => this.remove(), duration);
-        } else {
+        } else if (this.mode === "confirmation") {
             this.response = new Promise(resolve => {
                 this.resolveResponse = resolve;
             });
             this.elements.cancelButton.addEventListener("click", () => this.respond(false));
             this.elements.confirmButton.addEventListener("click", () => this.respond(true));
+        } else {
+            this.elements.dismissButton.addEventListener("click", () => this.remove());
         }
 
         return this;
@@ -231,9 +244,15 @@ const testMessages = [
         content: "Would you like to save before closing?",
         confirmText: "Save",
         cancelText: "Discard"
+    },
+    {
+        mode: "sticky",
+        type: "info",
+        title: "Sticky Notification",
+        content: "This notification stays open until you dismiss it."
     }
 ];
-
+/*
 testMessages.forEach(message => {
     const notification = new MessageNotification(message).show();
 
@@ -242,4 +261,5 @@ testMessages.forEach(message => {
             console.log(`${message.title}:`, result);
         });
     }
-});
+});*/
+
