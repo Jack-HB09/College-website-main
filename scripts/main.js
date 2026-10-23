@@ -38,19 +38,22 @@ addEventListener("DOMContentLoaded", (event) => {
     hamburger.addEventListener("click", () => {
         hamburger_menu.classList.toggle("show")
     });
-    URLSearchParams(document.location.search);
-    try{
-        let name = params.get("whenfrom"); // is the string 
-        if(name == "home"){
-            SetTimeout(() => {
-                returnToHome()
-            }, 1000 * 60 * 5)
-            
-        }
+  const params = new URLSearchParams(document.location.search);
 
-    }catch(e){
-        console.log(e)
+try {
+    console.log("hello im at the page");
+
+    let name = params.get("whenfrom");
+    console.log(name);
+
+    if (name === "home") {
+        setTimeout(() => {
+            returnToHome();
+        }, 1000 * 60 * 5); // 5 seconds
     }
+} catch (error) {
+    console.error(error);
+}
 });
 
 function returnToHome() {
