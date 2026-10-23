@@ -252,7 +252,7 @@ const testMessages = [
         content: "This notification stays open until you dismiss it."
     }
 ];
-/*
+
 testMessages.forEach(message => {
     const notification = new MessageNotification(message).show();
 
@@ -261,5 +261,4 @@ testMessages.forEach(message => {
             console.log(`${message.title}:`, result);
         });
     }
-});*/
-
+});

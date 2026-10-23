@@ -30,7 +30,7 @@ addEventListener("DOMContentLoaded", (event) => {
 
         account_svg.classList.toggle("active")
     });
-    add_product(5)
+    add_product(2.4)
 
 
     const hamburger = document.getElementById("hamburger-svg")
@@ -38,5 +38,29 @@ addEventListener("DOMContentLoaded", (event) => {
     hamburger.addEventListener("click", () => {
         hamburger_menu.classList.toggle("show")
     });
+    URLSearchParams(document.location.search);
+    try{
+        let name = params.get("whenfrom"); // is the string 
+        if(name == "home"){
+            SetTimeout(() => {
+                returnToHome()
+            }, 1000 * 60 * 5)
+            
+        }
+
+    }catch(e){
+        console.log(e)
+    }
 });
 
+function returnToHome() {
+    window.location.href = "Home.html?whenfrom=products"
+}
+
+function onLoad(){
+    
+    add_product(5)
+    
+}
+
+onLoad()
