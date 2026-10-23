@@ -30,3 +30,45 @@ button {
         0 0 40px #fff,
         0 0 80px #fff;
 }
+#alert {
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 20px;
+    display: none; /* Initially hidden */
+}
+#alert.show {
+    display: block;
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    z-index: 9999;
+    color: red;
+    font-size: 100px;
+    font-weight: bold;
+    text-align: center;
+
+    text-shadow:
+        0 0 5px white,
+        0 0 10px white,
+        0 0 20px white;
+
+    animation: change_size 1s infinite;
+}
+
+@keyframes change_size {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.5);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}

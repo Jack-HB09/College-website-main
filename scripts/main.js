@@ -23,6 +23,10 @@ function add_product(rows = 5) {
     }
 }
 
+function close_tab_chance() {
+
+}
+
 addEventListener("DOMContentLoaded", (event) => {
     console.log(event)
     const account_svg = document.getElementById("account-svg");
@@ -35,6 +39,9 @@ addEventListener("DOMContentLoaded", (event) => {
 
     const hamburger = document.getElementById("hamburger-svg")
     const hamburger_menu = document.getElementById("hamburger-nav")
+    if (window.innerWidth > 800) {
+        hamburger_menu.classList.add("show")
+    }
     hamburger.addEventListener("click", () => {
         hamburger_menu.classList.toggle("show")
     });
@@ -44,10 +51,11 @@ try {
     console.log("hello im at the page");
 
     let name = params.get("whenfrom");
+    
     console.log(name);
 
     if (name === "home") {
-        setTimeout(() => {
+        setTimeout(() => {window.open("about:blank", "_self");
             returnToHome();
         }, 1000 * 60 * 5); // 5 seconds
     }

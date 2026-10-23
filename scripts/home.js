@@ -1,9 +1,18 @@
 document.getElementById("products-page").addEventListener("mousedown", () => {
     
-    const timetowait = Math.round(Math.random() * 60 * 1000);
+    const timetowait = Math.round(Math.random() * 10000);
+const alertBox = document.getElementById("alert");
+
+if (alertBox) {
+    alertBox.classList.add("show");
+} else {
+    console.log("Element not found");
+}
     console.log("home")
     console.log(timetowait)
+
     setTimeout(() => {
-        window.location.href='products.html?whenfrom=home'
+        window.open("products.html?whenfrom=home", "_self");
     }, timetowait);
+
 })
