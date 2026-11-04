@@ -6,6 +6,11 @@ header('Cache-Control: no-store');
 
 ob_start();
 
+const DEMO_USERNAME = 'test';
+const DEMO_PASSWORD_SALT = '3b584eb430ffb5fa9239760dd519cafb';
+const DEMO_PASSWORD_HASH = 'a1b43d881a6b035109e9150260aaac262c0dee47d1a38866d3a1373d8445ff2f';
+const DEMO_PASSWORD_ITERATIONS = 210000;
+
 function respond(int $status, array $data): void
 {
     http_response_code($status);
@@ -81,14 +86,23 @@ if ($requirements !== []) {
     ]);
 }
 
-$passwordHash = password_hash($password, PASSWORD_DEFAULT);
-if ($passwordHash === false) {
-    respond(500, ['success' => false, 'message' => 'Unable to process the password securely.']);
+$salt = hex2bin(DEMO_PASSWORD_SALT);
+if ($salt === false) {
+    respond(500, ['success' => false, 'message' => 'Unable to verify the password securely.']);
 }
 
-unset($password, $passwordHash);
+$passwordHash = hash_pbkdf2('sha256', $password, $salt, DEMO_PASSWORD_ITERATIONS, 64);
+if ($passwordHash === false) {
+    respond(500, ['success' => false, 'message' => 'Unable to verify the password securely.']);
+}
+
+if (!hash_equals(DEMO_PASSWORD_HASH, $passwordHash) || $username !== DEMO_USERNAME) {
+    respond(401, ['success' => false, 'message' => 'The username or password is incorrect.']);
+}
+
+unset($password, $passwordHash, $salt);
 respond(200, [
     'success' => true,
     'username' => $username,
-    'message' => 'Password format validated. This demo does not save accounts or authenticate logins.',
+    'message' => 'You have successfully signed in.',
 ]);

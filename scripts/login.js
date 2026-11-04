@@ -37,19 +37,17 @@ function getPasswordValidationMessage(password) {
         requirements.push("no spaces or other whitespace");
     }
 
-    if (requirements.length === 0) {
-        return "";
-    }
-
-    return `Password must contain ${requirements.join(", ")}.`;
+    return requirements.length === 0
+        ? ""
+        : `Password must contain ${requirements.join(", ")}.`;
 }
 
-function showLoginNotification(type, title, content) {
+function showLoginNotification(type, title, content, duration = 4000) {
     new MessageNotification({
         type,
         title,
         content,
-        duration: 4000
+        duration
     }, messageContainer).show();
 }
 
@@ -93,8 +91,8 @@ loginForm.addEventListener("submit", async event => {
                 "Accept": "application/json"
             },
             body: JSON.stringify({
-                'username': usernameInput.value.trim(),
-                'password': passwordInput.value
+                username: usernameInput.value.trim(),
+                password: passwordInput.value
             })
         });
 
@@ -106,11 +104,7 @@ loginForm.addEventListener("submit", async event => {
                 status: response.status,
                 error
             });
-            showLoginNotification(
-                "error",
-                "Login failed",
-                "The server returned an invalid response."
-            );
+            showLoginNotification("error", "Login failed", "The server returned an invalid response.");
             return;
         }
 
@@ -141,11 +135,12 @@ loginForm.addEventListener("submit", async event => {
             return;
         }
 
-        showLoginNotification("success", "Login successful", result.message);
+        const redirectDelay = 3000;
+        showLoginNotification("success", "Login successful", result.message, redirectDelay);
         passwordInput.value = "";
         window.setTimeout(() => {
             window.location.assign("products.html?login=success");
-        }, 1200);
+        }, redirectDelay);
     } catch (error) {
         console.error("Unable to contact the PHP login handler.", error);
         showLoginNotification(
