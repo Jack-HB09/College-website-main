@@ -1,15 +1,13 @@
 const loginForm = document.querySelector("form");
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
-const loginStatus = document.getElementById("login-status");
 
 if (
     !loginForm
     || !(usernameInput instanceof HTMLInputElement)
     || !(passwordInput instanceof HTMLInputElement)
-    || !(loginStatus instanceof HTMLElement)
 ) {
-    throw new Error("The login form, its inputs, or status message was not found.");
+    throw new Error("The login form or its inputs were not found.");
 }
 
 const requiredSpecialCharacters = "!@#$%^&*()_+-=[]{}|;:,.<>?";
@@ -17,7 +15,7 @@ const requiredSpecialCharacters = "!@#$%^&*()_+-=[]{}|;:,.<>?";
 function getPasswordValidationMessage(password) {
     const requirements = [];
 
-    if (password.length < 12) {
+    if ([...password].length < 12) {
         requirements.push("at least 12 characters");
     }
     if (!/[A-Z]/.test(password)) {
@@ -47,8 +45,18 @@ passwordInput.addEventListener("input", () => {
     passwordInput.setCustomValidity("");
 });
 
-loginForm.addEventListener("submit", event => {
+usernameInput.addEventListener("input", () => {
+    usernameInput.setCustomValidity("");
+});
+
+loginForm.addEventListener("submit", async event => {
     event.preventDefault();
+    if (!usernameInput.value.trim()) {
+        usernameInput.setCustomValidity("Enter a username.");
+        usernameInput.reportValidity();
+        return;
+    }
+
     const validationMessage = getPasswordValidationMessage(passwordInput.value);
     passwordInput.setCustomValidity(validationMessage);
 
@@ -63,40 +71,48 @@ loginForm.addEventListener("submit", event => {
     }
 
     submitButton.disabled = true;
-    loginStatus.textContent = "Submitting login details…";
 
-    fetch(loginForm.action, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-        },
-        body: JSON.stringify({
-            username: usernameInput.value,
-            password: passwordInput.value
-        })
-    })
-        .then(async response => {
-            const result = await response.json();
-            if (!response.ok) {
-                throw new Error(result.message || "The login request could not be processed.");
-            }
-            if (typeof result.message !== "string") {
-                throw new Error("The login handler returned an invalid response.");
-            }
-
-            const usernameMessage = typeof result.username === "string"
-                ? `Username ${result.username} received. `
-                : "";
-            loginStatus.textContent = `${usernameMessage}${result.message}`;
-            passwordInput.value = "";
-        })
-        .catch(error => {
-            loginStatus.textContent = error instanceof TypeError
-                ? "Unable to contact the PHP login handler. Make sure the site is running on a PHP-enabled server."
-                : error.message;
-        })
-        .finally(() => {
-            submitButton.disabled = false;
+    try {
+        const response = await fetch(loginForm.action, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({
+                username: usernameInput.value.trim(),
+                password: passwordInput.value
+            })
         });
+
+        let result;
+        try {
+            result = await response.json();
+        } catch (error) {
+            console.error("The login handler returned an invalid JSON response.", {
+                status: response.status,
+                error
+            });
+            return;
+        }
+
+        console.log("Login response:", result);
+        if (!response.ok) {
+            console.error("The login request failed.", {
+                status: response.status,
+                response: result
+            });
+            return;
+        }
+        if (typeof result.message !== "string") {
+            console.error("The login handler returned an unexpected response.", result);
+            return;
+        }
+
+        passwordInput.value = "";
+    } catch (error) {
+        console.error("Unable to contact the PHP login handler.", error);
+    } finally {
+        submitButton.disabled = false;
+    }
 });

@@ -23,13 +23,13 @@ if ($requestBody === false) {
 
 $request = json_decode($requestBody, true);
 if (!is_array($request) || json_last_error() !== JSON_ERROR_NONE) {
-    respond(400, ['message' => 'A valid JSON request is required.']);
+    respond(400, ['success' => false, 'message' => 'A valid JSON request is required.']);
 }
 
 $username = $request['username'] ?? null;
 $password = $request['password'] ?? null;
 if (!is_string($username) || trim($username) === '' || !is_string($password) || $password === '') {
-    respond(400, ['message' => 'Username and password are required.']);
+    respond(400, ['success' => false, 'message' => 'Username and password are required.']);
 }
 
 $username = trim($username);
@@ -37,7 +37,7 @@ $requirements = [];
 $characterCount = preg_match_all('/./u', $password);
 
 if ($characterCount === false) {
-    respond(400, ['message' => 'Password must be valid UTF-8 text.']);
+    respond(400, ['success' => false, 'message' => 'Password must be valid UTF-8 text.']);
 }
 if ($characterCount < 12) {
     $requirements[] = 'at least 12 characters';
@@ -54,23 +54,25 @@ if (!preg_match('/[0-9]/', $password)) {
 if (strpbrk($password, '!@#$%^&*()_+-=[]{}|;:,.<>?') === false) {
     $requirements[] = 'at least one special character';
 }
-if (preg_match('/\s/u', $password)) {
+if (preg_match('/(*UCP)\s/u', $password)) {
     $requirements[] = 'no spaces or other whitespace';
 }
 
 if ($requirements !== []) {
     respond(422, [
+        'success' => false,
         'message' => 'Password must contain ' . implode(', ', $requirements) . '.',
     ]);
 }
 
 $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 if ($passwordHash === false) {
-    respond(500, ['message' => 'Unable to process the password securely.']);
+    respond(500, ['success' => false, 'message' => 'Unable to process the password securely.']);
 }
 
 unset($password, $passwordHash);
 respond(200, [
+    'success' => true,
     'username' => $username,
-    'message' => 'Username received and password hashed successfully. This demo does not save accounts or authenticate logins.',
+    'message' => 'The password was hashed, but this demo does not save accounts or authenticate logins.',
 ]);

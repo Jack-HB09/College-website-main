@@ -1,76 +1,107 @@
-function add_product(rows = 5) {
-    const product_scoller = document.getElementById("product-scroller");
-    console.log(product_scoller);
-    const AMOUNT = rows * 3;
-    for (let i = 0; i < AMOUNT; i++) {
-        product_scoller.innerHTML += `
-        <div class="product-card" id="product-card-` + i + `">
-            <img src="images/placeholder.svg" alt="Product Image" class="product-image">
-                <div class="product-details " id="product details-id">
-                    <div class="product-name">
-                        Product Name
-                    </div>
-                    <div class="product-price">$19.99</div>
-                    <div class="product-size-container">
-                        <button class="product-size-container-size" value="small">S</button>
-                        <button class="product-size-container-size" value="medium">M</button>
-                        <button class="product-size-container-size" value="large">L</button>
-                    </div>
-                    <button class="add-to basket">add to basket</button>
-                </div>
-        </div>
-        `
+function add_product(count = 15) {
+    const productScroller = document.getElementById("product-scroller");
+    if (!productScroller) {
+        throw new Error('Product container "#product-scroller" was not found.');
     }
+    if (!Number.isInteger(count) || count < 0) {
+        throw new RangeError("Product count must be a non-negative integer.");
+    }
+
+    const firstIndex = productScroller.querySelectorAll(".product-card").length;
+    const products = document.createDocumentFragment();
+
+    for (let index = 0; index < count; index += 1) {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.id = `product-card-${firstIndex + index}`;
+        card.innerHTML = `
+            <img src="images/placeholder.svg" alt="Product Image" class="product-image">
+            <div class="product-details">
+                <div class="product-name">Product Name</div>
+                <div class="product-price">$19.99</div>
+                <div class="product-size-container" aria-label="Choose a size">
+                    <button class="product-size-container-size" type="button" value="small" aria-pressed="false">S</button>
+                    <button class="product-size-container-size" type="button" value="medium" aria-pressed="false">M</button>
+                    <button class="product-size-container-size" type="button" value="large" aria-pressed="false">L</button>
+                </div>
+                <button class="add-to basket" type="button">add to basket</button>
+            </div>
+        `;
+        products.appendChild(card);
+    }
+
+    productScroller.appendChild(products);
+    return count;
 }
 
-function close_tab_chance() {
-
+function showProductNotification(type, title, content) {
+    new MessageNotification({
+        type,
+        title,
+        content,
+        duration: 3000
+    }).show();
 }
 
-addEventListener("DOMContentLoaded", (event) => {
-    console.log(event)
-    const account_svg = document.getElementById("account-svg");
-    account_svg.addEventListener("click", () => {
+document.addEventListener("DOMContentLoaded", () => {
+    const accountIcon = document.getElementById("account-svg");
+    accountIcon?.addEventListener("click", () => {
         window.location.href = "login.html";
     });
-    add_product(2.4)
 
-
-    const hamburger = document.getElementById("hamburger-svg")
-    const hamburger_menu = document.getElementById("hamburger-nav")
-    if (window.innerWidth > 800) {
-        hamburger_menu.classList.add("show")
+    const hamburger = document.getElementById("hamburger-svg");
+    const hamburgerMenu = document.getElementById("hamburger-nav");
+    if (hamburger && hamburgerMenu) {
+        if (window.innerWidth > 800) {
+            hamburgerMenu.classList.add("show");
+        }
+        hamburger.addEventListener("click", () => {
+            hamburgerMenu.classList.toggle("show");
+        });
     }
-    hamburger.addEventListener("click", () => {
-        hamburger_menu.classList.toggle("show")
+
+    const productScroller = document.getElementById("product-scroller");
+    if (!productScroller) {
+        return;
+    }
+
+    add_product(8);
+    window.shoppingBasket = [];
+
+    productScroller.addEventListener("click", event => {
+        if (!(event.target instanceof Element)) {
+            return;
+        }
+
+        const sizeButton = event.target.closest(".product-size-container-size");
+        if (sizeButton) {
+            const sizeButtons = sizeButton.parentElement.querySelectorAll(".product-size-container-size");
+            sizeButtons.forEach(button => {
+                const isSelected = button === sizeButton;
+                button.setAttribute("aria-pressed", String(isSelected));
+                button.classList.toggle("selected", isSelected);
+            });
+            return;
+        }
+
+        const addButton = event.target.closest(".add-to.basket");
+        if (!addButton) {
+            return;
+        }
+
+        const card = addButton.closest(".product-card");
+        const selectedSize = card.querySelector('.product-size-container-size[aria-pressed="true"]');
+        if (!selectedSize) {
+            showProductNotification("warning", "Choose a size", "Select a size before adding this product to your basket.");
+            return;
+        }
+
+        const item = {
+            productId: card.id,
+            name: card.querySelector(".product-name").textContent,
+            size: selectedSize.value
+        };
+        window.shoppingBasket.push(item);
+        showProductNotification("success", "Added to Basket", `${item.name} (${item.size}) was added to your basket.`);
     });
-  const params = new URLSearchParams(document.location.search);
-
-try {
-    console.log("hello im at the page");
-
-    let name = params.get("whenfrom");
-    
-    console.log(name);
-
-    if (name === "home") {
-        setTimeout(() => {window.open("about:blank", "_self");
-            returnToHome();
-        }, 1000 * 60 * 5); // 5 seconds
-    }
-} catch (error) {
-    console.error(error);
-}
 });
-
-function returnToHome() {
-    window.location.href = "Home.html?whenfrom=products"
-}
-
-function onLoad(){
-    
-    add_product(5)
-    
-}
-
-onLoad()

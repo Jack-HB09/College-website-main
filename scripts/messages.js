@@ -196,19 +196,15 @@ async function showMessagesFromJson() {
         throw new Error(`Failed to load notification data: ${response.status} ${response.statusText}`);
     }
 
-    testMessages.forEach(async(message) => {
-        const notification = new MessageNotification(message).show();
-
-        const messages = await response.json();
-        if (!Array.isArray(messages)) {
-            throw new TypeError("Notification data must be a JSON array.");
-        }
-    });
+    const messages = await response.json();
+    if (!Array.isArray(messages)) {
+        throw new TypeError("Notification data must be a JSON array.");
+    }
 
     messages.forEach(message => {
         new MessageNotification(message).show();
     });
-};
+}
 
 if (document.getElementById("message")) {
     showMessagesFromJson().catch(error => {
