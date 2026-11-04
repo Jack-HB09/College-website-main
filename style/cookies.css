@@ -1,5 +1,6 @@
 .cookie-scrim-backdrop {
     position: fixed;
+<<<<<<< HEAD
     inset: 0;
     z-index: 2147483647;
     display: grid;
@@ -94,6 +95,95 @@
     }
 
     .cookie-banner-container .message-button {
+=======
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cookie-scrim-backdrop .cookie-message-container {
+    position: static;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    transform: none;
+    width: min(100%, 560px);
+    max-width: 560px;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    pointer-events: auto;
+}
+
+.cookie-scrim-backdrop .message-notification-box,
+.cookie-scrim-backdrop .message-tile {
+    width: 100%;
+    max-width: 560px;
+    min-width: 320px;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35), 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.cookie-scrim-backdrop .cookie-consent-notification {
+    padding: 28px;
+    border-left: 0;
+}
+
+.cookie-scrim-backdrop .cookie-consent-notification .message-title {
+    font-size: 1.35rem;
+}
+
+.cookie-scrim-backdrop .cookie-consent-notification .message-content {
+    margin-top: 10px;
+    line-height: 1.6;
+}
+
+.cookie-scrim-backdrop .message-actions {
+    margin-top: 20px;
+}
+
+.cookie-scrim-backdrop .message-button {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    min-height: 44px;
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    box-shadow: none;
+}
+
+@media (max-width: 480px) {
+    .cookie-scrim-backdrop {
+        padding: 0;
+    }
+
+    .cookie-scrim-backdrop .cookie-message-container {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .cookie-scrim-backdrop .cookie-consent-notification {
+        padding: 22px;
+    }
+
+    .cookie-scrim-backdrop .message-actions {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .cookie-scrim-backdrop .message-actions .message-button {
+>>>>>>> f538fd4135fcea642c8d073674044a224a46f702
         width: 100%;
     }
 }

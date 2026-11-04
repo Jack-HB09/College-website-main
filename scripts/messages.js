@@ -17,6 +17,12 @@ const messageTypes = {
     }
 };
 
+const buttonFunctions = {
+    logButtonClick(title, buttonName) {
+        console.log(`${title}: ${buttonName} clicked`);
+    }
+};
+
 class MessageNotification {
     constructor(message, container = document.getElementById("message")) {
         const mode = message.mode ?? "duration";
@@ -32,6 +38,21 @@ class MessageNotification {
         this.timeoutId = null;
         this.response = null;
         this.resolveResponse = null;
+        this.selectedButton = null;
+
+        if (this.mode === "confirmation") {
+            if (!Array.isArray(message.buttons) || message.buttons.length === 0) {
+                throw new TypeError("Confirmation notifications require at least one button.");
+            }
+            for (const button of message.buttons) {
+                if (!button || typeof button.name !== "string" || typeof button.action !== "string" ||
+                    button.action.trim() === "" || typeof button.result !== "boolean" ||
+                    typeof button.function !== "string" || typeof buttonFunctions[button.function] !== "function" ||
+                    (button.style !== undefined && button.style !== "confirm" && button.style !== "cancel")) {
+                    throw new TypeError("Each confirmation button requires a name, action ID, registered function, boolean result, and optional confirm/cancel style.");
+                }
+            }
+        }
     }
 
     createTile() {
@@ -61,21 +82,23 @@ class MessageNotification {
             const actions = document.createElement("div");
             actions.className = "message-actions";
 
-            const cancelButton = document.createElement("button");
-            cancelButton.className = "message-button message-button-cancel";
-            cancelButton.type = "button";
-            cancelButton.textContent = this.message.cancelText ?? "Cancel";
+            const buttons = this.message.buttons.map(buttonConfig => {
+                const button = document.createElement("button");
+                button.className = `message-button message-button-${buttonConfig.style ?? "confirm"}`;
+                button.type = "button";
+                button.textContent = buttonConfig.name;
+                button.addEventListener("click", () => {
+                    this.selectedButton = buttonConfig;
+                    buttonFunctions[buttonConfig.function](this.message.title ?? "", buttonConfig.name);
+                    this.respond(buttonConfig.result);
+                });
+                actions.append(button);
+                return button;
+            });
 
-            const confirmButton = document.createElement("button");
-            confirmButton.className = "message-button message-button-confirm";
-            confirmButton.type = "button";
-            confirmButton.textContent = this.message.confirmText ?? "Confirm";
-
-            actions.append(cancelButton, confirmButton);
             tile.append(actions);
             this.elements.actions = actions;
-            this.elements.cancelButton = cancelButton;
-            this.elements.confirmButton = confirmButton;
+            this.elements.buttons = buttons;
         } else if (this.mode === "sticky") {
             tile.classList.add("message-tile-sticky");
 
@@ -134,8 +157,6 @@ class MessageNotification {
             this.response = new Promise(resolve => {
                 this.resolveResponse = resolve;
             });
-            this.elements.cancelButton.addEventListener("click", () => this.respond(false));
-            this.elements.confirmButton.addEventListener("click", () => this.respond(true));
         } else {
             this.elements.dismissButton.addEventListener("click", () => this.remove());
         }
@@ -168,98 +189,36 @@ class MessageNotification {
 
 window.MessageNotification = MessageNotification;
 
-const testMessages = [
-    {
-        type: "info",
-        title: "Information",
-        content: "A new update is available.",
-        duration: 3000
-    },
-    {
-        type: "success",
-        title: "Success",
-        content: "Your profile has been updated successfully.",
-        duration: 3000
-    },
-    {
-        type: "warning",
-        title: "Low Storage",
-        content: "You are running out of storage space.",
-        duration: 5000
-    },
-    {
-        type: "error",
-        title: "Connection Failed",
-        content: "Unable to connect to the server.",
-        duration: 5000
-    },
-
-    // Edge Cases
-    {
-        type: "info",
-        title: "",
-        content: "Message without a title.",
-        duration: 3000
-    },
-    {
-        type: "success",
-        title: "Empty Content",
-        content: "",
-        duration: 3000
-    },
-    {
-        type: "warning",
-        title: "Very Long Message",
-        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        duration: 8000
-    },
-    {
-        type: "error",
-        title: "Instant Dismiss",
-        content: "This should disappear almost immediately.",
-        duration: 100
-    },
-
-    // Confirmation Messages
-    {
-        mode: "confirmation",
-        type: "warning",
-        title: "Delete File",
-        content: "Are you sure you want to delete this file?",
-        confirmText: "Delete",
-        cancelText: "Keep"
-    },
-    {
-        mode: "confirmation",
-        type: "error",
-        title: "Sign Out",
-        content: "Do you want to sign out of your account?",
-        confirmText: "Sign Out",
-        cancelText: "Stay Logged In"
-    },
-    {
-        mode: "confirmation",
-        type: "info",
-        title: "Save Changes",
-        content: "Would you like to save before closing?",
-        confirmText: "Save",
-        cancelText: "Discard"
-    },
-    {
-        mode: "sticky",
-        type: "info",
-        title: "Sticky Notification",
-        content: "This notification stays open until you dismiss it."
+async function showMessagesFromJson() {
+    const messagesUrl = new URL("messages.json", document.currentScript.src);
+    const response = await fetch(messagesUrl);
+    if (!response.ok) {
+        throw new Error(`Failed to load notification data: ${response.status} ${response.statusText}`);
     }
+<<<<<<< HEAD
 ];
 
 testMessages.forEach(message => {
     const notification = new MessageNotification(message).show();
+=======
+>>>>>>> f538fd4135fcea642c8d073674044a224a46f702
 
-    if (message.mode === "confirmation") {
-        notification.response.then(result => {
-            console.log(`${message.title}:`, result);
-        });
+    const messages = await response.json();
+    if (!Array.isArray(messages)) {
+        throw new TypeError("Notification data must be a JSON array.");
     }
+<<<<<<< HEAD
 });
+=======
+>>>>>>> f538fd4135fcea642c8d073674044a224a46f702
 
+    messages.forEach(message => {
+        new MessageNotification(message).show();
+    });
+}
+
+if (document.getElementById("message")) {
+    showMessagesFromJson().catch(error => {
+        console.error("Unable to display notification data.", error);
+    });
+}

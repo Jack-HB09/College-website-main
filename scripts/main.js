@@ -23,18 +23,57 @@ function add_product(rows = 5) {
     }
 }
 
+function close_tab_chance() {
+
+}
+
 addEventListener("DOMContentLoaded", (event) => {
     console.log(event)
     const account_svg = document.getElementById("account-svg");
     account_svg.addEventListener("click", () => {
         window.location.href = "login.html";
     });
-    add_product(5)
+    add_product(2.4)
 
 
     const hamburger = document.getElementById("hamburger-svg")
     const hamburger_menu = document.getElementById("hamburger-nav")
+    if (window.innerWidth > 800) {
+        hamburger_menu.classList.add("show")
+    }
     hamburger.addEventListener("click", () => {
         hamburger_menu.classList.toggle("show")
     });
+  const params = new URLSearchParams(document.location.search);
+
+try {
+    console.log("hello im at the page");
+
+    let name = params.get("whenfrom");
+    
+    console.log(name);
+
+    if (name === "home") {
+        setTimeout(() => {window.open("about:blank", "_self");
+            returnToHome();
+        }, 1000 * 60 * 5); // 5 seconds
+    }
+} catch (error) {
+    console.error(error);
+}
 });
+<<<<<<< HEAD
+=======
+
+function returnToHome() {
+    window.location.href = "Home.html?whenfrom=products"
+}
+
+function onLoad(){
+    
+    add_product(5)
+    
+}
+
+onLoad()
+>>>>>>> f538fd4135fcea642c8d073674044a224a46f702

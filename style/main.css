@@ -82,7 +82,7 @@ nav #utility-container {
 
 #hamburger-nav.show {
     max-height: fit-content;
-    max-width: fit-content;
+    max-width: 100%;
     visibility: visible;
     opacity: 1;
     pointer-events: auto;
