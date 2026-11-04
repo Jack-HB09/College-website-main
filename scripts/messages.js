@@ -206,6 +206,8 @@ async function showMessagesFromJson() {
     });
 }
 
-showMessagesFromJson().catch(error => {
-    console.error("Unable to display notification data.", error);
-});
+if (document.getElementById("message")) {
+    showMessagesFromJson().catch(error => {
+        console.error("Unable to display notification data.", error);
+    });
+}
