@@ -16,23 +16,34 @@
 <body>
     <div id="message">
     </div>
-    <nav>
-        <div id="sitename">
-            site
-        </div>
+    <header class="site-header">
+        <a id="sitename" href="products.html">College Shop</a>
+        <nav id="hamburger-nav" aria-label="Primary navigation">
+            <ul>
+                <li><a href="products.html" aria-current="page">Products</a></li>
+            </ul>
+        </nav>
         <div id="utility-container">
-            <img id="account-svg" src="images/account.svg" alt="Account">
-            <img id="hamburger-svg" src="images/hamburger.svg" alt="Menu">
+            <button id="hamburger-button" type="button" aria-label="Open navigation" aria-controls="hamburger-nav" aria-expanded="false">
+                <img src="images/hamburger.svg" alt="">
+            </button>
+            <a id="basket-link" href="basket.html" aria-label="Basket, 0 items">
+                Basket <span id="basket-count">0</span>
+            </a>
+            <div class="account-container">
+                <button id="account-button" type="button" aria-label="Account options" aria-controls="account-menu" aria-expanded="false">
+                    <img src="images/account.svg" alt="">
+                    <span>Account</span>
+                </button>
+                <div id="account-menu" class="account-menu" hidden>
+                    <a id="account-login" href="login.html">Log in</a>
+                    <p id="account-user" hidden></p>
+                    <button id="account-logout" type="button" hidden>Sign out</button>
+                    <a href="mailto:jack.hoeybest@gmail.com">Contact us</a>
+                </div>
+            </div>
         </div>
-    </nav>
-    <div id="hamburger-nav">
-        <ul>
-            <li><a href="#">home</a></li>
-            <li><a href="#">contacts</a></li>
-            <li><a href="#">site map</a></li>
-            <li><a href="#">docs</a></li>
-        </ul>
-    </div>
+    </header>
     <main>
         <div id="main-header">
             Products
@@ -76,8 +87,7 @@
                 </div>
             </div>
             <div id="policies">
-                <a href="#">privacy policy</a>
-                <a href="#">terms of service</a>
+                <a href="mailto:jack.hoeybest@gmail.com">contact us</a>
                 <a href="legal/cookies.html">cookie policy</a>
             </div>
         </div>

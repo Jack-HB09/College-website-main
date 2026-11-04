@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basket</title>
+    <script src="scripts/main.js"></script>
+    <script src="scripts/messages.js" defer></script>
+    <script src="scripts/cookies.js" defer></script>
+    <link rel="stylesheet" href="style/main.css">
+    <link rel="stylesheet" href="style/messages.css">
+    <link rel="stylesheet" href="style/cookies.css">
+</head>
+
+<body>
+    <div id="message"></div>
+    <header class="site-header">
+        <a id="sitename" href="products.html">College Shop</a>
+        <nav id="hamburger-nav" aria-label="Primary navigation">
+            <ul>
+                <li><a href="products.html">Products</a></li>
+            </ul>
+        </nav>
+        <div id="utility-container">
+            <button id="hamburger-button" type="button" aria-label="Open navigation" aria-controls="hamburger-nav" aria-expanded="false">
+                <img src="images/hamburger.svg" alt="">
+            </button>
+            <a id="basket-link" href="basket.html" aria-label="Basket, 0 items">
+                Basket <span id="basket-count">0</span>
+            </a>
+            <div class="account-container">
+                <button id="account-button" type="button" aria-label="Account options" aria-controls="account-menu" aria-expanded="false">
+                    <img src="images/account.svg" alt="">
+                    <span>Account</span>
+                </button>
+                <div id="account-menu" class="account-menu" hidden>
+                    <a id="account-login" href="login.html">Log in</a>
+                    <p id="account-user" hidden></p>
+                    <button id="account-logout" type="button" hidden>Sign out</button>
+                    <a href="mailto:jack.hoeybest@gmail.com">Contact us</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="basket-main">
+        <h1 id="main-header">Your basket</h1>
+        <p id="basket-empty" hidden>Your basket is empty. <a href="products.html">Browse products</a>.</p>
+        <div id="basket-items" aria-live="polite"></div>
+        <div class="basket-summary">
+            <span>Total</span>
+            <strong id="basket-total">$0.00</strong>
+        </div>
+        <a class="continue-shopping" href="products.html">Continue shopping</a>
+        <p class="basket-note">This is a demo basket; checkout is not available.</p>
+    </main>
+
+    <footer>
+        <div class="spacer"></div>
+        <div id="footer-content">
+            <div id="contact">
+                <div id="socials-container">
+                    <h2>Follow us!</h2>
+                    <div id="socials">
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                            <img src="images/instagram.svg" alt="Instagram">
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+                            <img src="images/linkedin.svg" alt="LinkedIn">
+                        </a>
+                    </div>
+                </div>
+                <div id="older-container">
+                    <h2>Contact us</h2>
+                    <div id="older">
+                        <a href="tel:+447887319053">+44 7887 319053</a>
+                        <a href="mailto:jack.hoeybest@gmail.com">jack.hoeybest@gmail.com</a>
+                    </div>
+                </div>
+            </div>
+            <div id="policies">
+                <a href="mailto:jack.hoeybest@gmail.com">Contact us</a>
+                <a href="legal/cookies.html">Cookie policy</a>
+            </div>
+        </div>
+        <div class="spacer"></div>
+    </footer>
+</body>
+
+</html>

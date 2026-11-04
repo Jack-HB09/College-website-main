@@ -8,7 +8,7 @@ ob_start();
 
 const DEMO_USERNAME = 'test';
 const DEMO_PASSWORD_SALT = '3b584eb430ffb5fa9239760dd519cafb';
-const DEMO_PASSWORD_HASH = 'a1b43d881a6b035109e9150260aaac262c0dee47d1a38866d3a1373d8445ff2f';
+const DEMO_PASSWORD_HASH = '34f307734faf9d0729b5949ee6c907c68a27bd9958519e543d2e3439f5cea0b0';
 const DEMO_PASSWORD_ITERATIONS = 210000;
 
 function respond(int $status, array $data): void
@@ -54,38 +54,6 @@ if (!is_string($username) || trim($username) === '' || !is_string($password) || 
 }
 
 $username = trim($username);
-$requirements = [];
-$characterCount = preg_match_all('/./u', $password);
-
-if ($characterCount === false) {
-    respond(400, ['success' => false, 'message' => 'Password must be valid UTF-8 text.']);
-}
-if ($characterCount < 12) {
-    $requirements[] = 'at least 12 characters';
-}
-if (!preg_match('/[A-Z]/', $password)) {
-    $requirements[] = 'at least one uppercase letter';
-}
-if (!preg_match('/[a-z]/', $password)) {
-    $requirements[] = 'at least one lowercase letter';
-}
-if (!preg_match('/[0-9]/', $password)) {
-    $requirements[] = 'at least one number';
-}
-if (strpbrk($password, '!@#$%^&*()_+-=[]{}|;:,.<>?') === false) {
-    $requirements[] = 'at least one special character';
-}
-if (preg_match('/(*UCP)\s/u', $password)) {
-    $requirements[] = 'no spaces or other whitespace';
-}
-
-if ($requirements !== []) {
-    respond(422, [
-        'success' => false,
-        'message' => 'Password must contain ' . implode(', ', $requirements) . '.',
-    ]);
-}
-
 $salt = hex2bin(DEMO_PASSWORD_SALT);
 if ($salt === false) {
     respond(500, ['success' => false, 'message' => 'Unable to verify the password securely.']);
@@ -101,6 +69,19 @@ if (!hash_equals(DEMO_PASSWORD_HASH, $passwordHash) || $username !== DEMO_USERNA
 }
 
 unset($password, $passwordHash, $salt);
+
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+    'httponly' => true,
+    'samesite' => 'Lax',
+]);
+if (!session_start() || !session_regenerate_id(true)) {
+    respond(500, ['success' => false, 'message' => 'Unable to start a secure session.']);
+}
+
+$_SESSION['username'] = $username;
 respond(200, [
     'success' => true,
     'username' => $username,

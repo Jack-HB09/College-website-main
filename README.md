@@ -60,7 +60,24 @@ programmatically. Sticky notifications can also be removed in code with
 `sticky.remove()`. Timed notifications use `duration` in milliseconds and
 default to 3000 ms.
 
-The sample notifications are in [`scripts/messages.json`](./scripts/messages.json)
-and are loaded by `scripts/messages.js`. The JSON file must be served over HTTP
-or HTTPS (for example, through your PHP server); browsers generally block
-`fetch()` from local `file://` pages.
+Notifications are loaded from `scripts/messages.json` by `scripts/messages.js`;
+the file is empty by default so demo notifications do not interrupt normal
+shopping. The JSON file must be served over HTTP or HTTPS (for example, through
+your PHP server); browsers generally block `fetch()` from local `file://` pages.
+
+## Running the shop and demo account
+
+Serve the repository through PHP so the login, session-status, and sign-out
+endpoints can run. From the repository directory, use `php -S localhost:8000`
+and open `http://localhost:8000/products.html`. PHP is required; opening the
+HTML files directly with `file://` does not run the account endpoints.
+
+The fixed demo account is:
+
+- Username: `test`
+- Password: `DemoCollege!2026`
+
+The account is hard-coded for learning and demonstration only. It is not a
+registration system and must not be used for real users or deployed with real
+credentials. The basket is stored in the browser's local storage; checkout and
+order processing are not implemented.

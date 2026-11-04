@@ -13,35 +13,6 @@ if (
     throw new Error("The login form, message container, or notification class was not found.");
 }
 
-const requiredSpecialCharacters = "!@#$%^&*()_+-=[]{}|;:,.<>?";
-
-function getPasswordValidationMessage(password) {
-    const requirements = [];
-
-    if ([...password].length < 12) {
-        requirements.push("at least 12 characters");
-    }
-    if (!/[A-Z]/.test(password)) {
-        requirements.push("at least one uppercase letter");
-    }
-    if (!/[a-z]/.test(password)) {
-        requirements.push("at least one lowercase letter");
-    }
-    if (!/[0-9]/.test(password)) {
-        requirements.push("at least one number");
-    }
-    if (![...requiredSpecialCharacters].some(character => password.includes(character))) {
-        requirements.push("at least one special character");
-    }
-    if (/\s/.test(password)) {
-        requirements.push("no spaces or other whitespace");
-    }
-
-    return requirements.length === 0
-        ? ""
-        : `Password must contain ${requirements.join(", ")}.`;
-}
-
 function showLoginNotification(type, title, content, duration = 4000) {
     new MessageNotification({
         type,
@@ -50,10 +21,6 @@ function showLoginNotification(type, title, content, duration = 4000) {
         duration
     }, messageContainer).show();
 }
-
-passwordInput.addEventListener("input", () => {
-    passwordInput.setCustomValidity("");
-});
 
 usernameInput.addEventListener("input", () => {
     usernameInput.setCustomValidity("");
@@ -64,15 +31,6 @@ loginForm.addEventListener("submit", async event => {
     if (!usernameInput.value.trim()) {
         usernameInput.setCustomValidity("Enter a username.");
         usernameInput.reportValidity();
-        return;
-    }
-
-    const validationMessage = getPasswordValidationMessage(passwordInput.value);
-    passwordInput.setCustomValidity(validationMessage);
-
-    if (validationMessage) {
-        showLoginNotification("warning", "Check your password", validationMessage);
-        passwordInput.focus();
         return;
     }
 
@@ -113,10 +71,9 @@ loginForm.addEventListener("submit", async event => {
         }
 
         if (!response.ok) {
-            const isPasswordValidationFailure = response.status === 422;
             showLoginNotification(
-                isPasswordValidationFailure ? "warning" : "error",
-                isPasswordValidationFailure ? "Check your password" : "Login failed",
+                "error",
+                "Login failed",
                 typeof result.message === "string"
                     ? result.message
                     : "The login request could not be completed."
@@ -135,11 +92,11 @@ loginForm.addEventListener("submit", async event => {
             return;
         }
 
-        const redirectDelay = 3000;
+        const redirectDelay = 700;
         showLoginNotification("success", "Login successful", result.message, redirectDelay);
         passwordInput.value = "";
         window.setTimeout(() => {
-            window.location.assign("products.html?login=success");
+            window.location.assign("products.html");
         }, redirectDelay);
     } catch (error) {
         console.error("Unable to contact the PHP login handler.", error);

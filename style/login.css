@@ -106,6 +106,25 @@ form input[type="submit"]:focus-visible {
     outline-offset: 3px;
 }
 
+.login-hint {
+    margin: 20px 0 0;
+    color: #59616b;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.back-to-products {
+    display: inline-block;
+    margin-top: 16px;
+    color: #176580;
+    font-weight: 700;
+}
+
+.back-to-products:focus-visible {
+    outline: 3px solid #3795b4;
+    outline-offset: 3px;
+}
+
 @media (max-width: 480px) {
     body {
         padding: 16px;
