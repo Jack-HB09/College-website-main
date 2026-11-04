@@ -27,8 +27,7 @@ addEventListener("DOMContentLoaded", (event) => {
     console.log(event)
     const account_svg = document.getElementById("account-svg");
     account_svg.addEventListener("click", () => {
-
-        account_svg.classList.toggle("active")
+        window.location.href = "login.html";
     });
     add_product(5)
 
@@ -39,4 +38,3 @@ addEventListener("DOMContentLoaded", (event) => {
         hamburger_menu.classList.toggle("show")
     });
 });
-

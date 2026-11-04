@@ -1,0 +1,99 @@
+.cookie-scrim-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    display: grid;
+    place-items: center;
+    overflow-y: auto;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.68);
+    backdrop-filter: blur(5px);
+}
+
+.cookie-banner-container {
+    width: min(560px, calc(100vw - 32px));
+    min-width: min(320px, calc(100vw - 32px));
+    max-width: 560px;
+}
+
+.cookie-banner-container .message-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+    width: 100%;
+    min-width: min(320px, calc(100vw - 32px));
+    max-width: 560px;
+    padding: 32px;
+    border: 0;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+    animation: none;
+}
+
+.cookie-banner-container .message-tile > img {
+    display: none;
+}
+
+.cookie-banner-container .message-title {
+    color: #20242a;
+    font-size: 1.5rem;
+}
+
+.cookie-banner-container .message-content {
+    margin: 0;
+    color: #404852;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.cookie-banner-container .message-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.cookie-banner-container .message-button {
+    min-height: 44px;
+    padding: 10px 18px;
+    font-size: 1rem;
+}
+
+.cookie-banner-container .message-button-cancel {
+    border: 1px solid #68717c;
+    background: #fff;
+    color: #303640;
+}
+
+.cookie-banner-container .message-button-confirm {
+    background: #20242a;
+    color: #fff;
+}
+
+.cookie-banner-container .cookie-policy-link {
+    align-self: flex-start;
+    color: #174f87;
+    font-size: 0.95rem;
+    text-underline-offset: 3px;
+}
+
+.cookie-banner-container .cookie-policy-link:focus-visible {
+    outline: 3px solid #174f87;
+    outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+    .cookie-banner-container .message-tile {
+        gap: 16px;
+        padding: 24px;
+    }
+
+    .cookie-banner-container .message-actions {
+        flex-direction: column;
+    }
+
+    .cookie-banner-container .message-button {
+        width: 100%;
+    }
+}
