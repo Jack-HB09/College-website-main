@@ -45,6 +45,13 @@ function showProductNotification(type, title, content) {
 
 document.addEventListener("DOMContentLoaded", () => {
     const accountIcon = document.getElementById("account-svg");
+    const url = new URL(window.location.href);
+    if (accountIcon && url.searchParams.get("login") === "success") {
+        accountIcon.classList.add("active");
+        url.searchParams.delete("login");
+        window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+    }
+
     accountIcon?.addEventListener("click", () => {
         window.location.href = "login.html";
     });

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="style/login.css">
     <link rel="stylesheet" href="style/messages.css">
     <link rel="stylesheet" href="style/cookies.css">
@@ -12,9 +13,10 @@
     <script src="scripts/cookies.js" defer></script>
 </head>
 <body>
+    <div id="login-messages" aria-live="polite"></div>
     <main>
         <h1>Login</h1>
-        <form action="scripts/php/login.php" method="post">
+        <form id="login-form">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" autocomplete="username" required><br><br>
             <label for="password">Password:</label>

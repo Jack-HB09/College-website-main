@@ -1,13 +1,16 @@
-const loginForm = document.querySelector("form");
+const loginForm = document.getElementById("login-form");
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
+const messageContainer = document.getElementById("login-messages");
 
 if (
     !loginForm
     || !(usernameInput instanceof HTMLInputElement)
     || !(passwordInput instanceof HTMLInputElement)
+    || !messageContainer
+    || typeof window.MessageNotification !== "function"
 ) {
-    throw new Error("The login form or its inputs were not found.");
+    throw new Error("The login form, message container, or notification class was not found.");
 }
 
 const requiredSpecialCharacters = "!@#$%^&*()_+-=[]{}|;:,.<>?";
@@ -41,6 +44,15 @@ function getPasswordValidationMessage(password) {
     return `Password must contain ${requirements.join(", ")}.`;
 }
 
+function showLoginNotification(type, title, content) {
+    new MessageNotification({
+        type,
+        title,
+        content,
+        duration: 4000
+    }, messageContainer).show();
+}
+
 passwordInput.addEventListener("input", () => {
     passwordInput.setCustomValidity("");
 });
@@ -61,7 +73,8 @@ loginForm.addEventListener("submit", async event => {
     passwordInput.setCustomValidity(validationMessage);
 
     if (validationMessage) {
-        passwordInput.reportValidity();
+        showLoginNotification("warning", "Check your password", validationMessage);
+        passwordInput.focus();
         return;
     }
 
@@ -73,15 +86,15 @@ loginForm.addEventListener("submit", async event => {
     submitButton.disabled = true;
 
     try {
-        const response = await fetch(loginForm.action, {
+        const response = await fetch("scripts/php/login.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             },
             body: JSON.stringify({
-                username: usernameInput.value.trim(),
-                password: passwordInput.value
+                'username': usernameInput.value.trim(),
+                'password': passwordInput.value
             })
         });
 
@@ -93,25 +106,55 @@ loginForm.addEventListener("submit", async event => {
                 status: response.status,
                 error
             });
+            showLoginNotification(
+                "error",
+                "Login failed",
+                "The server returned an invalid response."
+            );
             return;
         }
 
-        console.log("Login response:", result);
+        if (!result || typeof result !== "object" || Array.isArray(result)) {
+            throw new TypeError("The login handler returned an unexpected response.");
+        }
+
         if (!response.ok) {
-            console.error("The login request failed.", {
-                status: response.status,
-                response: result
-            });
-            return;
-        }
-        if (typeof result.message !== "string") {
-            console.error("The login handler returned an unexpected response.", result);
+            const isPasswordValidationFailure = response.status === 422;
+            showLoginNotification(
+                isPasswordValidationFailure ? "warning" : "error",
+                isPasswordValidationFailure ? "Check your password" : "Login failed",
+                typeof result.message === "string"
+                    ? result.message
+                    : "The login request could not be completed."
+            );
             return;
         }
 
+        if (result.success !== true || typeof result.message !== "string") {
+            showLoginNotification(
+                "error",
+                "Login failed",
+                typeof result.message === "string"
+                    ? result.message
+                    : "The login handler returned an unexpected response."
+            );
+            return;
+        }
+
+        showLoginNotification("success", "Login successful", result.message);
         passwordInput.value = "";
+        window.setTimeout(() => {
+            window.location.assign("products.html?login=success");
+        }, 1200);
     } catch (error) {
         console.error("Unable to contact the PHP login handler.", error);
+        showLoginNotification(
+            "error",
+            "Login failed",
+            error instanceof TypeError
+                ? "The server could not be reached or returned an invalid response."
+                : "An unexpected error occurred while processing the login."
+        );
     } finally {
         submitButton.disabled = false;
     }

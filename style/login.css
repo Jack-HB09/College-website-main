@@ -19,6 +19,19 @@ body {
     font-family: Arial, sans-serif;
 }
 
+#login-messages {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    z-index: 1100;
+    display: flex;
+    width: min(500px, calc(100vw - 32px));
+    flex-direction: column;
+    gap: 10px;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
 main {
     width: min(100%, 440px);
     padding: clamp(24px, 6vw, 40px);
@@ -96,6 +109,15 @@ form input[type="submit"]:focus-visible {
 @media (max-width: 480px) {
     body {
         padding: 16px;
+    }
+
+    #login-messages {
+        top: auto;
+        right: 16px;
+        bottom: 16px;
+        left: 16px;
+        width: auto;
+        transform: none;
     }
 
     main {

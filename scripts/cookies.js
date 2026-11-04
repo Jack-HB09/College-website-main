@@ -13,8 +13,10 @@ class CookieBannerNotification extends MessageNotification {
         super({
             mode: "confirmation",
             type: "privacy",
-            title: options.title ?? "Your cookie preferences",
-            content: options.content ?? "Choose whether to accept or reject cookies on this site.",
+            title: options.title == null ? "Your cookie preferences" : options.title,
+            content: options.content == null
+                ? "Choose whether to accept or reject cookies on this site."
+                : options.content,
             buttons: [
                 {
                     name: "Reject All",
@@ -116,7 +118,9 @@ class CookieBannerNotification extends MessageNotification {
             this.keydownHandler = null;
         }
 
-        this.scrimElement?.remove();
+        if (this.scrimElement) {
+            this.scrimElement.remove();
+        }
         this.scrimElement = null;
 
         if (this.previousBodyOverflow !== null) {
@@ -126,7 +130,7 @@ class CookieBannerNotification extends MessageNotification {
 
         const previousFocus = this.previousFocus;
         this.previousFocus = null;
-        if (previousFocus?.isConnected) {
+        if (previousFocus && previousFocus.isConnected) {
             previousFocus.focus();
         }
 
