@@ -62,8 +62,6 @@ try {
     console.error(error);
 }
 });
-<<<<<<< HEAD
-=======
 
 function returnToHome() {
     window.location.href = "Home.html?whenfrom=products"
@@ -76,4 +74,3 @@ function onLoad(){
 }
 
 onLoad()
->>>>>>> f538fd4135fcea642c8d073674044a224a46f702
