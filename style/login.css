@@ -113,6 +113,13 @@ form input[type="submit"]:focus-visible {
     line-height: 1.5;
 }
 
+.account-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
 .back-to-products {
     display: inline-block;
     margin-top: 16px;

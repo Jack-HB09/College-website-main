@@ -13,20 +13,4 @@ $options = [
     PDO::ATTR_EMULATE_PREPARES   => false,                  // Use real prepared statements
 ];
 
-try {
-    // 3. Establish the PDO connection
-    $pdo = new PDO($dsn, $user, $pass, $options);
-    echo json_encode([
-        'status' => 'connected to database',
-        'message' => 'Database connection success.'
-    ]);
-} catch (\PDOException $e) {
-    // Return a JSON error if the database connection fails
-    echo json_encode([
-        'status' => 'error connecting to database',
-        'message' => 'Database connection failed.'
-    ]);
-    exit;
-}
-
-?>
+$pdo = new PDO($dsn, $user, $pass, $options);

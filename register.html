@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="style/login.css">
+    <link rel="stylesheet" href="style/messages.css">
+    <link rel="stylesheet" href="style/cookies.css">
+    <script src="scripts/messages.js" defer></script>
+    <script src="scripts/register.js" defer></script>
+    <script src="scripts/cookies.js" defer></script>
+</head>
+<body>
+    <div id="login-messages" aria-live="polite"></div>
+    <main>
+        <h1>Register</h1>
+        <form id="register-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" autocomplete="username" required><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" autocomplete="new-password" required><br><br>
+            <input type="submit" value="Register">
+        </form>
+        <nav class="account-navigation" aria-label="Account navigation">
+            <a class="back-to-products" href="products.html">Back to products</a>
+            <a class="back-to-products" href="login.html">Login</a>
+        </nav>
+    </main>
+</body>
+</html>
