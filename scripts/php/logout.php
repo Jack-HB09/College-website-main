@@ -10,14 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Only POST requests are supported.']);
     exit;
 }
-
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-    'httponly' => true,
-    'samesite' => 'Lax',
-]);
 if (!session_start()) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Unable to end the account session.']);
