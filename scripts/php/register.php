@@ -11,11 +11,21 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 require_once __DIR__ . '/origin-check.php';
 requireSameOriginRequest();
+require_once __DIR__ . '/helpers/json-request.php';
 
-$username = isset($_POST['username']) ? trim($_POST['username']) : '';
-$email = isset($_POST['email']) ? trim($_POST['email']) : '';
-$password = isset($_POST['password']) ? $_POST['password'] : '';
-$confirmPassword = isset($_POST['confirm-password']) ? $_POST['confirm-password'] : '';
+$requestData = readJsonRequestBody();
+$username = isset($requestData['username']) && is_string($requestData['username'])
+    ? trim($requestData['username'])
+    : '';
+$email = isset($requestData['email']) && is_string($requestData['email'])
+    ? trim($requestData['email'])
+    : '';
+$password = isset($requestData['password']) && is_string($requestData['password'])
+    ? $requestData['password']
+    : '';
+$confirmPassword = isset($requestData['confirm-password']) && is_string($requestData['confirm-password'])
+    ? $requestData['confirm-password']
+    : '';
 
 if ($username === '') {
     sendJsonResponse([

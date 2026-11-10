@@ -62,9 +62,9 @@ registerForm.addEventListener("submit", async event => {
         const response = await fetch("scripts/php/register.php", {
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/json",
             },
-            body: new URLSearchParams(new FormData(registerForm))
+            body: JSON.stringify(Object.fromEntries(new FormData(registerForm)))
         });
         const data = await response.json();
 

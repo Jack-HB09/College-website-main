@@ -45,9 +45,12 @@ loginForm.addEventListener("submit", async event => {
         const response = await fetch("scripts/php/login.php", {
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/json",
             },
-            body: `username=${encodeURIComponent(usernameInput.value.trim())}&password=${encodeURIComponent(passwordInput.value)}`
+            body: JSON.stringify({
+                username: usernameInput.value.trim(),
+                password: passwordInput.value
+            })
         });
 
         let result;
