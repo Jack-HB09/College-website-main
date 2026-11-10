@@ -1,18 +1,23 @@
 <?php
 declare(strict_types=1);
 
-header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/helpers/json-response.php';
 header('Cache-Control: no-store');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Allow: POST');
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Only POST requests are supported.']);
+    sendJsonResponse(['success' => false, 'message' => 'Only POST requests are supported.'], 405);
     exit;
 }
-if (!session_start()) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Unable to end the account session.']);
+require_once __DIR__ . '/origin-check.php';
+requireSameOriginRequest();
+
+require_once __DIR__ . '/session-bootstrap.php';
+try {
+    startAccountSession();
+} catch (Throwable $e) {
+    error_log('Unable to start session for logout: ' . $e->getMessage());
+    sendJsonResponse(['success' => false, 'message' => 'Unable to end the account session.'], 500);
     exit;
 }
 
@@ -30,9 +35,8 @@ if (ini_get('session.use_cookies')) {
 }
 
 if (!session_destroy()) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Unable to end the account session.']);
+    sendJsonResponse(['success' => false, 'message' => 'Unable to end the account session.'], 500);
     exit;
 }
 
-echo json_encode(['success' => true]);
+sendJsonResponse(['success' => true]);

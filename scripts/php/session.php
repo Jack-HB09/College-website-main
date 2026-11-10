@@ -1,31 +1,26 @@
 <?php
 declare(strict_types=1);
 
-header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/helpers/json-response.php';
 header('Cache-Control: no-store');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     header('Allow: GET');
-    http_response_code(405);
-    echo json_encode(['authenticated' => false, 'message' => 'Only GET requests are supported.']);
+    sendJsonResponse(['authenticated' => false, 'message' => 'Only GET requests are supported.'], 405);
     exit;
 }
 
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-    'httponly' => true,
-    'samesite' => 'Lax',
-]);
-if (!session_start()) {
-    http_response_code(500);
-    echo json_encode(['authenticated' => false, 'message' => 'Unable to load account status.']);
+require_once __DIR__ . '/session-bootstrap.php';
+try {
+    startAccountSession();
+} catch (Throwable $e) {
+    error_log('Unable to load account session: ' . $e->getMessage());
+    sendJsonResponse(['authenticated' => false, 'message' => 'Unable to load account status.'], 500);
     exit;
 }
 
 $username = $_SESSION['username'] ?? null;
-echo json_encode([
+sendJsonResponse([
     'authenticated' => is_string($username),
     'username' => is_string($username) ? $username : null,
-], JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
+]);

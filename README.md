@@ -65,19 +65,29 @@ the file is empty by default so demo notifications do not interrupt normal
 shopping. The JSON file must be served over HTTP or HTTPS (for example, through
 your PHP server); browsers generally block `fetch()` from local `file://` pages.
 
-## Running the shop and demo account
+## Running the shop and account pages
 
-Serve the repository through PHP so the login, session-status, and sign-out
-endpoints can run. From the repository directory, use `php -S localhost:8000`
-and open `http://localhost:8000/products.html`. PHP is required; opening the
-HTML files directly with `file://` does not run the account endpoints.
+Serve the repository through PHP so the login, registration, session-status,
+and sign-out endpoints can run. From the repository directory, use
+`php -S localhost:8000` and open `http://localhost:8000/products.html`. PHP is
+required; opening the HTML files directly with `file://` does not run the
+account endpoints.
+
+Before registering accounts, apply
+[`scripts/php/migrations/001_add_email_to_users.sql`](./scripts/php/migrations/001_add_email_to_users.sql)
+to the database containing the `users` table. It adds a unique email column;
+existing users will have no email until you update their records. Also apply
+[`scripts/php/migrations/002_create_login_attempts.sql`](./scripts/php/migrations/002_create_login_attempts.sql)
+before using login; it creates the table required to throttle repeated failed
+login attempts.
 
 The fixed demo account is:
 
 - Username: `test`
 - Password: `DemoCollege!2026`
 
-The account is hard-coded for learning and demonstration only. It is not a
-registration system and must not be used for real users or deployed with real
-credentials. The basket is stored in the browser's local storage; checkout and
-order processing are not implemented.
+The demo account is hard-coded for learning and demonstration only. The
+registration form stores usernames, email addresses, and password hashes in
+the database. This project is for learning and must not be deployed with real
+user data or credentials. The basket is stored in the browser's local storage;
+checkout and order processing are not implemented.

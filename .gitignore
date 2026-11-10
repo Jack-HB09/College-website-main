@@ -1,0 +1,6 @@
+/login-documentation/
+!/login-documentation/
+/login-documentation/*
+!/login-documentation/docs/
+/login-documentation/docs/*
+!/login-documentation/docs/php-helpers.md

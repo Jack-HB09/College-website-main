@@ -1,8 +1,8 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/helpers/json-response.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode([
+    sendJsonResponse([
         'success' => false,
         'status' => 'error',
         'message' => 'Invalid request method. Only POST is allowed.'
@@ -10,11 +10,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$username = isset($_POST['username']) ? trim($_POST['username']) : '';
-$password = isset($_POST['password']) ? trim($_POST['password']) : '';
+require_once __DIR__ . '/origin-check.php';
+requireSameOriginRequest();
 
-if (empty($username) || empty($password)) {
-    echo json_encode([
+$username = isset($_POST['username']) ? trim($_POST['username']) : '';
+$password = isset($_POST['password']) ? $_POST['password'] : '';
+
+if ($username === '' || $password === '') {
+    sendJsonResponse([
         'success' => false,
         'status' => 'error',
         'message' => 'Please provide both username and password.'
@@ -24,25 +27,40 @@ if (empty($username) || empty($password)) {
 
 try {
     require_once __DIR__ . '/connection.php';
+    require_once __DIR__ . '/session-bootstrap.php';
+    require_once __DIR__ . '/login-rate-limit.php';
+
+    if (isLoginAttemptLimited($pdo, $username)) {
+        sendJsonResponse([
+            'success' => false,
+            'status' => 'error',
+            'message' => 'Login is temporarily unavailable. Please try again later.'
+        ], 429);
+        exit;
+    }
 
     $stmt = $pdo->prepare("SELECT id, password_hash FROM users WHERE username = ? LIMIT 1");
     $stmt->execute([$username]);
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password_hash'])) {
-        session_start();
+        clearFailedLoginAttempts($pdo, $username);
+        startAccountSession();
+        if (!session_regenerate_id(true)) {
+            throw new RuntimeException('Unable to rotate the account session ID.');
+        }
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $username;
 
-        echo json_encode([
+        sendJsonResponse([
             'success' => true,
             'status' => 'success',
             'message' => 'Login successful.',
             'user_id' => $user['id']
         ]);
-        
     } else {
-        echo json_encode([
+        recordFailedLoginAttempt($pdo, $username);
+        sendJsonResponse([
             'success' => false,
             'status' => 'error',
             'message' => 'Invalid username or password.'
@@ -51,7 +69,7 @@ try {
 
 } catch (Throwable $e) {
     error_log('Login processing failed: ' . $e->getMessage());
-    echo json_encode([
+    sendJsonResponse([
         'success' => false,
         'status' => 'error',
         'message' => 'An error occurred while processing your request.'
