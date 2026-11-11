@@ -37,7 +37,7 @@ function isSameOriginRequest(): bool
         && $originPort === $requestPort;
 }
 
-function requireSameOriginRequest(): void
+function requireSameOriginRequest(?string $publicErrorMessage = null): void
 {
     if (isSameOriginRequest()) {
         return;
@@ -46,7 +46,7 @@ function requireSameOriginRequest(): void
     sendJsonResponse([
         'success' => false,
         'status' => 'error',
-        'message' => 'The request origin could not be verified.'
+        'message' => $publicErrorMessage ?? 'The request origin could not be verified.'
     ], 403);
     exit;
 }

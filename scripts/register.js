@@ -4,6 +4,7 @@ const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const confirmPasswordInput = document.getElementById("confirm-password");
 const messageContainer = document.getElementById("login-messages");
+const registrationEndpoint = new URL("php/register.php", document.currentScript.src);
 
 function showRegistrationNotification(type, title, content) {
     new MessageNotification({
@@ -59,7 +60,7 @@ registerForm.addEventListener("submit", async event => {
     }
 
     try {
-        const response = await fetch("scripts/php/register.php", {
+        const response = await fetch(registrationEndpoint, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

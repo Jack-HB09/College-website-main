@@ -1,0 +1,120 @@
+.profile-picture-current {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.profile-picture-current img,
+#profile-picture-current {
+    width: 88px;
+    height: 88px;
+    flex: 0 0 88px;
+    border: 1px solid #d5d9de;
+    border-radius: 50%;
+    background: #eef4f7;
+    object-fit: cover;
+}
+
+.profile-picture-current p {
+    margin: 0;
+}
+
+.profile-picture-dropzone {
+    display: grid;
+    min-height: 100px;
+    place-items: center;
+    padding: 1rem;
+    border: 2px dashed #7b8b96;
+    border-radius: 8px;
+    background: #f7fafb;
+    color: #176580;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+}
+
+.profile-picture-dropzone:hover,
+.profile-picture-dropzone:focus-visible,
+.profile-picture-dropzone.is-dragging {
+    border-color: #176580;
+    background: #eef4f7;
+    outline: 3px solid rgba(55, 149, 180, 0.2);
+}
+
+.visually-hidden-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+}
+
+.visually-hidden-file-input:focus-visible {
+    outline: 2px solid #176580;
+}
+
+.visually-hidden-file-input:focus-visible ~ .profile-picture-cropper {
+    outline: 2px solid #176580;
+}
+
+.profile-picture-cropper[hidden] {
+    display: none;
+}
+
+.profile-picture-cropper {
+    margin-top: 1.25rem;
+}
+
+.profile-picture-cropper h3 {
+    margin: 0 0 0.5rem;
+}
+
+.profile-picture-stage {
+    position: relative;
+    display: grid;
+    width: fit-content;
+    max-width: 100%;
+    margin: 1rem auto;
+    overflow: hidden;
+    border-radius: 6px;
+    background: #20242a;
+    touch-action: none;
+}
+
+.profile-picture-stage > img {
+    display: block;
+    width: auto;
+    max-width: min(100%, 560px);
+    max-height: 55vh;
+    object-fit: contain;
+}
+
+.profile-picture-crop-circle {
+    position: absolute;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.46);
+    cursor: move;
+    touch-action: none;
+}
+
+.profile-picture-crop-circle:focus-visible {
+    outline: 3px solid #3795b4;
+    outline-offset: 3px;
+}
+
+.profile-picture-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.profile-picture-actions button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}

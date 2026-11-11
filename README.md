@@ -78,8 +78,12 @@ Before registering accounts, apply
 to the database containing the `users` table. It adds a unique email column;
 existing users will have no email until you update their records. Also apply
 [`scripts/php/migrations/002_create_login_attempts.sql`](./scripts/php/migrations/002_create_login_attempts.sql)
-before using login; it creates the table required to throttle repeated failed
-login attempts.
+to create the initial table for login-attempt throttling. Apply
+[`scripts/php/migrations/003_key_login_attempts_by_username.sql`](./scripts/php/migrations/003_key_login_attempts_by_username.sql)
+after migration 002 to use username-only throttling. Migration 003 clears
+temporary throttling counters and removes the IP-address column. Do not apply
+migration 003 if the table has already been manually changed to use only
+`username_hash` as its primary key.
 
 The fixed demo account is:
 

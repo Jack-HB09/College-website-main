@@ -8,16 +8,18 @@
     <link rel="stylesheet" href="style/login.css">
     <link rel="stylesheet" href="style/messages.css">
     <link rel="stylesheet" href="style/cookies.css">
+    <link rel="stylesheet" href="style/password-recovery.css">
     <script src="scripts/messages.js" defer></script>
     <script src="scripts/password-toggle.js" defer></script>
     <script src="scripts/login.js" defer></script>
+    <script src="scripts/password-recovery.js" defer></script>
     <script src="scripts/cookies.js" defer></script>
 </head>
 <body>
     <div id="login-messages" aria-live="polite"></div>
     <main>
         <h1>Login</h1>
-        <form id="login-form">
+        <form id="login-form" method="post">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" autocomplete="username" required><br><br>
             <label for="password">Password:</label>
@@ -32,6 +34,30 @@
             </div><br><br>
             <input type="submit" value="Login">
         </form>
+        <button id="show-password-recovery" class="recovery-link" type="button" aria-controls="password-recovery" aria-expanded="false">
+            Forgot your password?
+        </button>
+        <section id="password-recovery" class="recovery-panel" aria-labelledby="password-recovery-heading" hidden>
+            <h2 id="password-recovery-heading">Reset your password</h2>
+            <p>Enter your account email to find your recovery question.</p>
+            <form id="reset-email-form" method="post" novalidate>
+                <label for="reset-email">Email address</label>
+                <input id="reset-email" name="email" type="email" maxlength="254" autocomplete="email" required>
+                <button type="submit">Continue</button>
+            </form>
+            <form id="reset-password-form" method="post" novalidate hidden>
+                <p id="reset-recovery-question" class="recovery-question"></p>
+                <input id="reset-question-id" type="hidden" name="question_id">
+                <input id="reset-email-value" type="hidden" name="email">
+                <label for="reset-answer">Your answer</label>
+                <input id="reset-answer" name="answer" type="text" maxlength="200" autocomplete="off" required>
+                <label for="reset-new-password">New password</label>
+                <input id="reset-new-password" name="password" type="password" autocomplete="new-password" required>
+                <label for="reset-confirm-password">Confirm new password</label>
+                <input id="reset-confirm-password" name="confirm_password" type="password" autocomplete="new-password" required>
+                <button type="submit">Reset password</button>
+            </form>
+        </section>
         <p class="login-hint">Demo account: username <code>test</code>, password <code>DemoCollege!2026</code>. This fixed account is for testing only.</p>
         <nav class="account-navigation" aria-label="Account navigation">
             <a class="back-to-products" href="products.html">Back to products</a>

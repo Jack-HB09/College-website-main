@@ -140,18 +140,73 @@ function renderBasket(basket) {
     });
 }
 
-function setAccountState(authenticated, username = "") {
-    const loginLink = document.getElementById("account-login");
-    const accountUser = document.getElementById("account-user");
-    const logoutButton = document.getElementById("account-logout");
-    if (!loginLink || !accountUser || !logoutButton) {
+function refreshAccountAvatar(authenticated) {
+    const accountAvatar = document.querySelector("#account-button img");
+    if (!(accountAvatar instanceof HTMLImageElement)) {
         return;
     }
 
-    loginLink.hidden = authenticated;
+    const defaultSource = accountAvatar.dataset.defaultSource || accountAvatar.getAttribute("src");
+    if (!defaultSource) {
+        throw new Error("The default account icon could not be found.");
+    }
+    accountAvatar.dataset.defaultSource = defaultSource;
+    accountAvatar.onerror = null;
+    accountAvatar.onload = null;
+    accountAvatar.classList.remove("has-profile-picture");
+
+    if (!authenticated) {
+        accountAvatar.src = defaultSource;
+        return;
+    }
+
+    let usingDefault = false;
+    accountAvatar.onload = () => {
+        if (!usingDefault) {
+            accountAvatar.classList.add("has-profile-picture");
+        }
+    };
+    accountAvatar.onerror = () => {
+        usingDefault = true;
+        accountAvatar.onerror = null;
+        accountAvatar.classList.remove("has-profile-picture");
+        accountAvatar.src = defaultSource;
+    };
+    accountAvatar.src = `scripts/php/profile-picture.php?v=${Date.now()}`;
+}
+
+function setAccountState(authenticated, username = "") {
+    const accountButton = document.getElementById("account-button");
+    const accountMenuPage = document.getElementById("account-menu-page");
+    const accountUser = document.getElementById("account-user");
+    const logoutButton = document.getElementById("account-logout");
+    if (!accountButton || !accountMenuPage || !accountUser || !logoutButton) {
+        return;
+    }
+
+    accountButton.dataset.authenticated = String(authenticated);
+    accountButton.classList.toggle("is-authenticated", authenticated);
+    accountMenuPage.hidden = !authenticated;
     accountUser.hidden = !authenticated;
     logoutButton.hidden = !authenticated;
     accountUser.textContent = authenticated ? `Signed in as ${username}` : "";
+    refreshAccountAvatar(authenticated);
+
+    const accountPageUsername = document.getElementById("account-page-username");
+    if (accountPageUsername) {
+        accountPageUsername.textContent = username;
+    }
+
+    const accountPageSignedIn = document.getElementById("account-page-signed-in");
+    const accountPageSignedOut = document.getElementById("account-page-signed-out");
+    if (accountPageSignedIn && accountPageSignedOut) {
+        accountPageSignedIn.hidden = !authenticated;
+        accountPageSignedOut.hidden = authenticated;
+    }
+    const accountPageLoading = document.getElementById("account-page-loading");
+    if (accountPageLoading) {
+        accountPageLoading.hidden = true;
+    }
 }
 
 async function loadAccountState() {
@@ -169,6 +224,9 @@ async function loadAccountState() {
     }
 
     setAccountState(result.authenticated, typeof result.username === "string" ? result.username : "");
+    if (!result.authenticated && document.body.classList.contains("accounts-page")) {
+        window.location.replace("login.html");
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -186,6 +244,32 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         accountButton.addEventListener("click", () => {
+            if (accountButton.dataset.authenticated !== "true") {
+                if (accountButton.dataset.authenticated === "false") {
+                    window.location.assign("login.html");
+                    return;
+                }
+
+                loadAccountState().then(() => {
+                    if (accountButton.dataset.authenticated === "true") {
+                        setAccountMenuOpen(true);
+                    } else {
+                        window.location.assign("login.html");
+                    }
+                }).catch(error => {
+                    console.error("Unable to load account status.", error);
+                    showProductNotification("error", "Account unavailable", "Please try again.");
+                });
+
+                window.addEventListener("profile-picture-updated", () => {
+                    const accountButton = document.getElementById("account-button");
+                    if (accountButton?.dataset.authenticated === "true") {
+                        refreshAccountAvatar(true);
+                    }
+                });
+                return;
+            }
+
             setAccountMenuOpen(accountButton.getAttribute("aria-expanded") !== "true");
         });
 
@@ -207,9 +291,8 @@ document.addEventListener("DOMContentLoaded", () => {
             setAccountState(false);
         });
 
-        const logoutButton = document.getElementById("account-logout");
-        logoutButton?.addEventListener("click", async () => {
-            logoutButton.disabled = true;
+        const signOut = async button => {
+            button.disabled = true;
             try {
                 const response = await fetch("scripts/php/logout.php", {
                     method: "POST",
@@ -225,13 +308,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 setAccountState(false);
                 setAccountMenuOpen(false);
+                if (document.body.classList.contains("accounts-page")) {
+                    window.location.assign("login.html");
+                    return;
+                }
                 showProductNotification("success", "Signed out", "You have signed out of your account.");
             } catch (error) {
                 console.error("Unable to sign out.", error);
                 showProductNotification("error", "Sign out failed", "Please try again.");
             } finally {
-                logoutButton.disabled = false;
+                button.disabled = false;
             }
+        };
+
+        document.getElementById("account-logout")?.addEventListener("click", event => {
+            signOut(event.currentTarget);
+        });
+        document.getElementById("account-page-logout")?.addEventListener("click", event => {
+            signOut(event.currentTarget);
         });
     }
 

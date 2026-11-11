@@ -4,3 +4,5 @@
 !/login-documentation/docs/
 /login-documentation/docs/*
 !/login-documentation/docs/php-helpers.md
+!/login-documentation/docs/password-recovery.md
+!/login-documentation/docs/profile-pictures.md

@@ -16,10 +16,12 @@
 <body>
     <div id="message"></div>
     <header class="site-header">
-        <a id="sitename" href="products.html">College Shop</a>
+        <a id="sitename" href="index.html">College Shop</a>
         <nav id="hamburger-nav" aria-label="Primary navigation">
             <ul>
+                <li><a href="index.html">Home</a></li>
                 <li><a href="products.html">Products</a></li>
+                <li><a href="mailto:jack.hoeybest@gmail.com">Contact us</a></li>
             </ul>
         </nav>
         <div id="utility-container">
@@ -30,15 +32,14 @@
                 Basket <span id="basket-count">0</span>
             </a>
             <div class="account-container">
-                <button id="account-button" type="button" aria-label="Account options" aria-controls="account-menu" aria-expanded="false">
+                <button id="account-button" type="button" aria-label="Account" aria-controls="account-menu" aria-expanded="false" data-authenticated="unknown">
                     <img src="images/account.svg" alt="">
                     <span>Account</span>
                 </button>
                 <div id="account-menu" class="account-menu" hidden>
-                    <a id="account-login" href="login.html">Log in</a>
+                    <a id="account-menu-page" href="accounts.html" hidden>Account</a>
                     <p id="account-user" hidden></p>
                     <button id="account-logout" type="button" hidden>Sign out</button>
-                    <a href="mailto:jack.hoeybest@gmail.com">Contact us</a>
                 </div>
             </div>
         </div>

@@ -89,6 +89,7 @@ if (!$hasMinimumLength || !$hasUppercase || !$hasLowercase || !$hasDigit || !$ha
 
 try {
     require_once __DIR__ . '/connection.php';
+    $pdo = getDatabaseConnection();
     $password_hash = password_hash($password, PASSWORD_ARGON2ID);
 
     $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)");

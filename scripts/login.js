@@ -2,6 +2,7 @@ const loginForm = document.getElementById("login-form");
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const messageContainer = document.getElementById("login-messages");
+const loginEndpoint = new URL("php/login.php", document.currentScript.src);
 
 if (
     !loginForm
@@ -42,7 +43,7 @@ loginForm.addEventListener("submit", async event => {
     submitButton.disabled = true;
 
     try {
-        const response = await fetch("scripts/php/login.php", {
+        const response = await fetch(loginEndpoint, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -55,6 +56,7 @@ loginForm.addEventListener("submit", async event => {
 
         let result;
         try {
+            console.log("Login API response:", response);
             result = await response.json();
         } catch (error) {
             console.error("The login handler returned an invalid JSON response.", {
@@ -70,6 +72,13 @@ loginForm.addEventListener("submit", async event => {
         }
 
         if (!response.ok) {
+            console.error("The login API returned an error response.", {
+                url: loginEndpoint.href,
+                status: response.status,
+                message: typeof result.message === "string" ? result.message : undefined,
+                debugId: typeof result.debug_id === "string" ? result.debug_id : undefined,
+                stage: typeof result.debug_stage === "string" ? result.debug_stage : undefined
+            });
             showLoginNotification(
                 "error",
                 "Login failed",
@@ -81,6 +90,13 @@ loginForm.addEventListener("submit", async event => {
         }
 
         if (result.success !== true || typeof result.message !== "string") {
+            console.error("The login API reported that login failed.", {
+                url: loginEndpoint.href,
+                status: response.status,
+                message: typeof result.message === "string" ? result.message : undefined,
+                debugId: typeof result.debug_id === "string" ? result.debug_id : undefined,
+                stage: typeof result.debug_stage === "string" ? result.debug_stage : undefined
+            });
             showLoginNotification(
                 "error",
                 "Login failed",

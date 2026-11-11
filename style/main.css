@@ -92,6 +92,14 @@ body {
     object-fit: contain;
 }
 
+#account-button.is-authenticated:not(.has-profile-picture) img {
+    filter: brightness(0) saturate(100%) invert(55%) sepia(78%) saturate(397%) hue-rotate(86deg) brightness(94%) contrast(89%);
+}
+
+#account-button img {
+    border-radius: 50%;
+}
+
 #basket-count {
     min-width: 1.4rem;
     padding: 0.08rem 0.3rem;
@@ -646,6 +654,144 @@ footer h1 {
 .basket-note {
     color: #59616b;
     font-size: 0.9rem;
+}
+
+.home-main,
+.account-main {
+    width: min(100%, 900px);
+    align-self: center;
+    gap: 1.5rem;
+}
+
+.home-intro {
+    width: min(100%, 680px);
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: #eef4f7;
+    text-align: center;
+}
+
+.home-intro h1 {
+    margin: 0 0 0.75rem;
+    color: #20242a;
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+}
+
+.home-intro p {
+    margin: 0 0 1.25rem;
+    color: #46515b;
+    line-height: 1.6;
+}
+
+.home-products-link {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1rem;
+    border-radius: 6px;
+    background: #176580;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.home-products-link:hover {
+    background: #124e64;
+}
+
+.home-products-link:focus-visible,
+.carousel-controls button:focus-visible,
+.account-overview button:focus-visible {
+    outline: 3px solid #3795b4;
+    outline-offset: 2px;
+}
+
+.home-carousel {
+    width: min(100%, 680px);
+    padding: 1.25rem;
+    border: 1px solid #d5d9de;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.home-carousel h2 {
+    margin: 0 0 1rem;
+    font-size: 1.4rem;
+}
+
+.carousel-slide {
+    margin: 0;
+}
+
+.carousel-slide img {
+    display: block;
+    width: min(100%, 280px);
+    height: 220px;
+    margin: 0 auto;
+    border-radius: 8px;
+    background: #f0f0f0;
+    object-fit: contain;
+}
+
+.carousel-slide figcaption {
+    margin-top: 0.75rem;
+    color: #46515b;
+    font-weight: 700;
+}
+
+.carousel-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.carousel-controls button,
+.account-overview button {
+    min-height: 44px;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid #176580;
+    border-radius: 6px;
+    background: #fff;
+    color: #176580;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.carousel-controls button:hover,
+.account-overview button:hover {
+    background: #eef4f7;
+}
+
+.account-main #main-header {
+    align-self: center;
+}
+
+.account-overview {
+    width: min(100%, 560px);
+    align-self: center;
+    padding: 1.5rem;
+    border: 1px solid #d5d9de;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.account-overview h2 {
+    margin-top: 0;
+}
+
+.account-overview p {
+    color: #46515b;
+    line-height: 1.6;
+}
+
+#account-page-signed-out a {
+    color: #176580;
+    font-weight: 700;
 }
 
 @media (max-width: 480px) {

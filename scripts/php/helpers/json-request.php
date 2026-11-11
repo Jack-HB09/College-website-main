@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/json-response.php';
 
-function readJsonRequestBody(): array
+function readJsonRequestBody(?string $publicErrorMessage = null): array
 {
     $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
     $mediaType = strtolower(trim(explode(';', $contentType, 2)[0]));
@@ -12,7 +12,7 @@ function readJsonRequestBody(): array
         sendJsonResponse([
             'success' => false,
             'status' => 'error',
-            'message' => 'Content-Type must be application/json.'
+            'message' => $publicErrorMessage ?? 'Content-Type must be application/json.'
         ], 415);
         exit;
     }
@@ -22,7 +22,7 @@ function readJsonRequestBody(): array
         sendJsonResponse([
             'success' => false,
             'status' => 'error',
-            'message' => 'A JSON request body is required.'
+            'message' => $publicErrorMessage ?? 'A JSON request body is required.'
         ], 400);
         exit;
     }
@@ -32,7 +32,7 @@ function readJsonRequestBody(): array
         sendJsonResponse([
             'success' => false,
             'status' => 'error',
-            'message' => 'The request body must contain valid JSON.'
+            'message' => $publicErrorMessage ?? 'The request body must contain valid JSON.'
         ], 400);
         exit;
     }
@@ -41,7 +41,7 @@ function readJsonRequestBody(): array
         sendJsonResponse([
             'success' => false,
             'status' => 'error',
-            'message' => 'The JSON request body must be an object.'
+            'message' => $publicErrorMessage ?? 'The JSON request body must be an object.'
         ], 400);
         exit;
     }
