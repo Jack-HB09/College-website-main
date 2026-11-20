@@ -19,8 +19,8 @@ All requests use JSON POST bodies, same-origin checks, prepared SQL statements, 
 ## Limits and database setup
 
 - Five incorrect recovery-answer submissions are permitted per account per UTC calendar day. The next submission is refused until the next UTC day. Attempts for unknown accounts share a separate placeholder bucket and do not persist submitted email addresses.
-- One successful password change is permitted per account per UTC calendar month.
-- The monthly timestamp and daily attempt counters are stored in UTC and serialized with database row locks/transactions.
+- Successful password changes are not limited by calendar month. The daily limit applies only to incorrect recovery-answer submissions.
+- Daily attempt counters are stored in UTC and serialized with database row locks/transactions.
 - `scripts/php/migrations/004_create_password_recovery_tables.sql` creates `user_infomation`, `password_reset_limits`, and `password_reset_attempts` when missing.
 - `scripts/php/migrations/005_add_profile_picture_to_user_infomation.sql` extends the same `user_infomation` table with a profile-picture BLOB and makes the recovery fields nullable so a user may save a profile picture before enrolling a recovery question.
 - This repository does not include the live database schema. Before applying the migration, inspect `user_infomation` on the target database. `CREATE TABLE IF NOT EXISTS` does not add missing columns to an existing table; verify it has `user_id`, `security_question`, and `security_answer` with compatible types, and adapt the migration if necessary. Also verify the deployed `users.user_id` type and the database engine supports InnoDB transactions.
@@ -35,7 +35,7 @@ The question itself is retrievable by email through the specified recovery flow,
 | `scripts/password-recovery.js` | Question setup, prompt lookup, validation, one-shot reset submission, and existing notifications. |
 | `scripts/php/security-question.php` | Authenticated setup/change and answer hashing. |
 | `scripts/php/password-reset-question.php` | Resolve the account from session ID or email and return its prompt. |
-| `scripts/php/password-reset.php` | Verify answer and matching question ID, enforce daily/monthly limits, update the password hash, and end the current session. |
+| `scripts/php/password-reset.php` | Verify answer and matching question ID, enforce the daily incorrect-answer limit, update the password hash, and end the current session. |
 | `scripts/php/password-recovery-common.php` | Shared validation, question loading, account lookup, and session helpers. |
 | `scripts/php/helpers/json-request.php` and `scripts/php/origin-check.php` | Existing helpers with optional friendly error text for recovery endpoints; existing callers retain their default behavior. |
 | `scripts/php/migrations/004_create_password_recovery_tables.sql` | Recovery-question and reset-limit tables. |
@@ -74,10 +74,9 @@ Run these checks against a disposable database after confirming the deployed sch
 | Submit an incorrect answer five times for a disposable account | Each failure displays a generic error; the sixth attempt is refused with HTTP 429 until the next UTC date. |
 | Submit an incorrect answer for multiple unknown addresses | The attempts share the unknown-account bucket; submitted email addresses are not stored in the attempt table. |
 | Submit a mismatched question ID with the correct answer | The reset is refused and counted as a failed answer. |
-| Submit a correct answer, compliant new password, and matching confirmation in one request | The password hash changes, `last_reset_at` is set in UTC, the active session is destroyed, and the success notification appears. |
+| Submit a correct answer, compliant new password, and matching confirmation in one request | The password hash changes, the active session is destroyed, and the success notification appears. |
 | Submit a weak or mismatched new password | The form shows a human-readable notification and the server does not update the password. |
-| Attempt a second successful change in the same UTC month | The request is refused with a user-friendly monthly-limit message. |
-| Attempt a successful change in the next UTC calendar month | The reset is allowed if the recovery answer is correct and the daily limit is not exhausted. |
+| Submit multiple successful changes in the same UTC month with the correct recovery answer | Each reset is allowed; the incorrect-answer daily limit does not restrict successful answers. |
 | Signed-in reset from `accounts.html` | The email field is omitted; the user ID comes from the session; successful reset redirects to login after the notification. |
 | Send cross-origin or non-POST requests to the endpoints | The request is rejected by the existing method and same-origin protections. |
 | Inspect HTML output and responses | User text is inserted with `textContent`; JSON responses do not disclose SQL errors, hashes, or debug details. |
@@ -86,3 +85,6 @@ Run these checks against a disposable database after confirming the deployed sch
 ## Deployment notes
 
 Apply the schema migration only after checking the live `user_infomation` structure and making a backup. Confirm HTTPS is enabled. Run the PHP lint and helper tests above, then complete every disposable-database check before enabling recovery for real users. The daily counter is keyed by account ID (unknown identities share a non-account bucket); it is not an IP-based denial-of-service control.
+
+
+passowrd for main is: Dp0Bc%r9{5=5

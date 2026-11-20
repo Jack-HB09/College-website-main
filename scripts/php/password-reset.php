@@ -49,8 +49,6 @@ try {
     $pdo = getDatabaseConnection();
     $userId = getRecoveryUserId($pdo, $sessionUserId, $email);
     $accountKey = makeRecoveryAccountKey($userId);
-    $now = new DateTimeImmutable('now', new DateTimeZone('UTC'));
-    $nowValue = $now->format('Y-m-d H:i:s');
 
     $pdo->beginTransaction();
     $user = null;
@@ -101,29 +99,9 @@ try {
         exit;
     }
 
-    $statement = $pdo->prepare(
-        'INSERT INTO password_reset_limits (user_id, last_reset_at) VALUES (?, NULL) '
-        . 'ON DUPLICATE KEY UPDATE user_id = user_id'
-    );
-    $statement->execute([$userId]);
-    $statement = $pdo->prepare(
-        'SELECT last_reset_at FROM password_reset_limits WHERE user_id = ? FOR UPDATE'
-    );
-    $statement->execute([$userId]);
-    $lastReset = $statement->fetchColumn();
-    if (is_string($lastReset) && substr($lastReset, 0, 7) === $now->format('Y-m')) {
-        $pdo->commit();
-        recoveryError('Your password has already been changed this month. Please contact support if you still need help.', 429);
-        exit;
-    }
-
     $passwordHash = password_hash($password, PASSWORD_ARGON2ID);
     $statement = $pdo->prepare('UPDATE users SET password_hash = ? WHERE user_id = ?');
     $statement->execute([$passwordHash, $userId]);
-    $statement = $pdo->prepare(
-        'UPDATE password_reset_limits SET last_reset_at = ? WHERE user_id = ?'
-    );
-    $statement->execute([$nowValue, $userId]);
     $pdo->commit();
 
     $sessionEnded = endRecoverySession();

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="style/cookies.css">
     <link rel="stylesheet" href="style/password-recovery.css">
     <link rel="stylesheet" href="style/profile-picture.css">
+    <link rel="stylesheet" href="style/accounts.css">
     <script src="scripts/password-recovery.js" defer></script>
     <script src="scripts/profile-picture.js" defer></script>
 </head>
@@ -24,7 +25,7 @@
         <nav id="hamburger-nav" aria-label="Primary navigation">
             <ul>
                 <li><a href="index.html">Home</a></li>
-                <li><a href="products.html">Products</a></li>
+                <li><a href="products.html" aria-current="page">Products</a></li>
                 <li><a href="mailto:jack.hoeybest@gmail.com">Contact us</a></li>
             </ul>
         </nav>
@@ -48,37 +49,35 @@
             </div>
         </div>
     </header>
+    <section id="account-page-body">
+<div id="sidenav">
+    <h2 id="sidenav-heading">Account settings</h2>
+        <ul is="account-settings">
+            <li><a href="#account-overview-heading">Account overview</a></li>
+            <li><a href="#security-question-heading">Password recovery</a></li>
+            <li><a href="#account-reset-heading">Change your password</a></li>
+        </ul>
+    </div>
 
-    <main class="account-main">
+    <main class="account-main" id="account-main-section">
         <h1 id="main-header">Your account</h1>
         <p id="account-page-loading" role="status">Checking your account...</p>
         <section id="account-page-signed-in" class="account-overview" aria-labelledby="account-overview-heading" hidden>
             <h2 id="account-overview-heading">Account overview</h2>
+            <div id="account-info">
+                <form id="account-info-form">
+                    <label for="account-firstname">First name</label>
+                    <input id="account-firstname" name="first_name" type="text">
+                    </br><label for="account-lastname">Last name</label>
+                    <input id="account-lastname" name="last_name" type="text">
+                    </br><label for="account-date-of-birth">Date of birth</label>
+                    <input id="account-date-of-birth" name="date_of_birth" type="date" max="2024-06-01" >
+                </br><input id="submit-btn" type="submit" value="Save changes">
+            </form>
+
+            </div>
             <p>You are signed in as <strong id="account-page-username"></strong>.</p>
             <button id="account-page-logout" type="button">Sign out</button>
-            <section class="recovery-panel profile-picture-panel" aria-labelledby="profile-picture-heading">
-                <h2 id="profile-picture-heading">Profile picture</h2>
-                <div class="profile-picture-current">
-                    <img id="profile-picture-current" src="images/account.svg" alt="Your current profile picture">
-                    <p>Choose an image and move the circle to select what appears in your profile picture.</p>
-                </div>
-                <label id="profile-picture-dropzone" class="profile-picture-dropzone" for="profile-picture-input" tabindex="0">
-                    Drop a JPG or PNG image here, or choose a file
-                </label>
-                <input id="profile-picture-input" class="visually-hidden-file-input" type="file" accept="image/jpeg,image/png">
-                <section id="profile-picture-cropper" class="profile-picture-cropper" aria-labelledby="profile-picture-crop-heading" hidden>
-                    <h3 id="profile-picture-crop-heading">Choose your crop</h3>
-                    <p>Drag the circle over the part of the image you want to show. You can also move it with the arrow keys.</p>
-                    <div id="profile-picture-stage" class="profile-picture-stage">
-                        <img id="profile-picture-source" alt="Image being cropped">
-                        <div id="profile-picture-crop-circle" class="profile-picture-crop-circle" tabindex="0" aria-label="Move the crop circle with arrow keys"></div>
-                    </div>
-                    <div class="profile-picture-actions">
-                        <button id="profile-picture-save" type="button">Save profile picture</button>
-                        <button id="profile-picture-cancel" type="button">Cancel</button>
-                    </div>
-                </section>
-            </section>
             <section class="recovery-panel" aria-labelledby="security-question-heading">
                 <h2 id="security-question-heading">Password recovery</h2>
                 <p>Set a recovery question so you can change your password if you cannot sign in.</p>
@@ -114,7 +113,7 @@
             <p><a href="login.html">Log in</a> to view your account.</p>
         </section>
     </main>
-
+</section>
     <footer>
         <div class="spacer"></div>
         <div id="footer-content">
@@ -146,5 +145,5 @@
         <div class="spacer"></div>
     </footer>
 </body>
-
+<script src="scripts/account.js" defer></script>
 </html>

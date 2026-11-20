@@ -1,0 +1,49 @@
+:root{
+    --flex-sidenav: 2;
+    --flex-main: 5;
+    --sidenav-color-light: #fafafa;
+}
+
+#account-page-body{
+    display: flex;
+    flex-direction: row;
+    max-width: 60%;
+    margin:auto;
+
+}
+#sidenav{
+    padding-top:30px;
+    flex: var(--flex-sidenav) !important;
+    background-color: var(--sidenav-color-light);
+}
+#sidenav-heading{
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding-left: 10px;
+}
+#account-main-section{
+    flex: var(--flex-main) !important;
+}
+main{
+    flex:var(--flex-main) !important;
+}
+
+#sidenav ul{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+#sidenav a{
+    display: block;
+    padding: 7px;
+    padding-left: 15px;
+    color: inherit;
+    text-decoration: none;
+    font-size: 1rem;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+}

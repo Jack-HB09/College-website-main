@@ -3,12 +3,15 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/json-response.php';
 
-function readJsonRequestBody(?string $publicErrorMessage = null): array
+function readJsonRequestBody(?string $publicErrorMessage = null, ?callable $onDiagnostic = null): array
 {
     $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
     $mediaType = strtolower(trim(explode(';', $contentType, 2)[0]));
 
     if ($mediaType !== 'application/json') {
+        if ($onDiagnostic !== null) {
+            $onDiagnostic('invalid_content_type');
+        }
         sendJsonResponse([
             'success' => false,
             'status' => 'error',
@@ -19,6 +22,9 @@ function readJsonRequestBody(?string $publicErrorMessage = null): array
 
     $rawBody = file_get_contents('php://input');
     if ($rawBody === false || $rawBody === '') {
+        if ($onDiagnostic !== null) {
+            $onDiagnostic('empty_request_body');
+        }
         sendJsonResponse([
             'success' => false,
             'status' => 'error',
@@ -29,6 +35,9 @@ function readJsonRequestBody(?string $publicErrorMessage = null): array
 
     $request = json_decode($rawBody);
     if (json_last_error() !== JSON_ERROR_NONE) {
+        if ($onDiagnostic !== null) {
+            $onDiagnostic('invalid_json');
+        }
         sendJsonResponse([
             'success' => false,
             'status' => 'error',
@@ -38,6 +47,9 @@ function readJsonRequestBody(?string $publicErrorMessage = null): array
     }
 
     if (!$request instanceof stdClass) {
+        if ($onDiagnostic !== null) {
+            $onDiagnostic('json_body_not_object');
+        }
         sendJsonResponse([
             'success' => false,
             'status' => 'error',
