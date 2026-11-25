@@ -1,0 +1,31 @@
+{
+    "1": {
+        "1": "Login Successful",
+        "2": "Login Failed",
+        "3": "Incorrect Password",
+        "4": "Account Locked",
+        "5": "MFA Passed",
+        "6": "MFA Failed"
+    },
+    "2": {
+        "1": "Account Created",
+        "2": "Account Deleted",
+        "3": "Account Updated",
+        "4": "Password Changed",
+        "5": "Password Reset Requested",
+        "6": "Password Reset Completed"
+    },
+    "3": {
+        "1": "Logout",
+        "2": "Session Expired",
+        "3": "Session Revoked",
+        "4": "Remember Me Login"
+    },
+    "4": {
+        "1": "Suspicious Activity",
+        "2": "Too Many Password Attempts",
+        "3": "Security Challenge Triggered",
+        "4": "Security Challenge Passed",
+        "5": "Security Challenge Failed"
+    }
+}

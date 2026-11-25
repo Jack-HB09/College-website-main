@@ -21,6 +21,12 @@ try {
     exit;
 }
 
+$logoutUserId = filter_var(
+    $_SESSION['user_id'] ?? null,
+    FILTER_VALIDATE_INT,
+    ['options' => ['min_range' => 1]]
+);
+
 $_SESSION = [];
 $cookieParameters = session_get_cookie_params();
 if (ini_get('session.use_cookies')) {
@@ -37,6 +43,16 @@ if (ini_get('session.use_cookies')) {
 if (!session_destroy()) {
     sendJsonResponse(['success' => false, 'message' => 'Unable to end the account session.'], 500);
     exit;
+}
+
+if ($logoutUserId !== false) {
+    try {
+        require_once __DIR__ . '/connection.php';
+        require_once __DIR__ . '/helpers/event-tracking.php';
+        logEvent(getDatabaseConnection(), (int) $logoutUserId, 3, 1);
+    } catch (Throwable $eventError) {
+        error_log('Unable to record logout event: ' . $eventError->getMessage());
+    }
 }
 
 sendJsonResponse(['success' => true]);

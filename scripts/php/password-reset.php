@@ -103,6 +103,12 @@ try {
     $statement = $pdo->prepare('UPDATE users SET password_hash = ? WHERE user_id = ?');
     $statement->execute([$passwordHash, $userId]);
     $pdo->commit();
+    require_once __DIR__ . '/helpers/event-tracking.php';
+    try {
+        logEvent($pdo, $userId, 2, 6);
+    } catch (Throwable $eventError) {
+        error_log('Unable to record password-reset-completed event: ' . $eventError->getMessage());
+    }
 
     $sessionEnded = endRecoverySession();
     if (!$sessionEnded) {

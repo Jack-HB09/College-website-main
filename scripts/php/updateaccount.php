@@ -147,6 +147,12 @@ try {
         ':user_id' => $userId,
     ]);
     $logDebug('database_update_completed', ['affected_rows' => $statement->rowCount()]);
+    require_once __DIR__ . '/helpers/event-tracking.php';
+    try {
+        logEvent($pdo, $userId, 2, 3);
+    } catch (Throwable $eventError) {
+        error_log('Unable to record account-updated event: ' . $eventError->getMessage());
+    }
 
     $debugStage = 'success response';
     sendJsonResponse([

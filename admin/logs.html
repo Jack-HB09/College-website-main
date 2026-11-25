@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Logs | College Shop</title>
+    <link rel="stylesheet" href="../style/main.css">
+    <link rel="stylesheet" href="../style/admin.css">
+    <script src="../scripts/main.js" defer></script>
+    <script src="../scripts/admin-logs.js" defer></script>
+</head>
+<body class="admin-page">
+    <header class="site-header">
+        <a id="sitename" href="../index.html">College Shop</a>
+        <nav id="hamburger-nav" aria-label="Primary navigation">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../products.html">Products</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="admin-main">
+        <h1>Activity Logs</h1>
+        <p id="admin-log-status" role="status">Checking administrator access...</p>
+
+        <section id="admin-log-content" hidden aria-labelledby="admin-log-table-heading">
+            <h2 id="admin-log-table-heading">User activity</h2>
+
+            <form id="admin-log-filters" class="admin-log-filters">
+                <label for="admin-username">Search User
+                    <input id="admin-username" name="username" type="search" maxlength="100">
+                </label>
+                <label for="admin-event">Event type
+                    <select id="admin-event" name="event">
+                        <option value="">All</option>
+                        <option value="1">Authentication</option>
+                        <option value="2">Account</option>
+                        <option value="3">Session</option>
+                        <option value="4">Security</option>
+                    </select>
+                </label>
+                <label for="admin-from">From
+                    <input id="admin-from" name="from" type="date">
+                </label>
+                <label for="admin-to">To
+                    <input id="admin-to" name="to" type="date">
+                </label>
+                <label for="admin-page-size">Records Per Page
+                    <select id="admin-page-size" name="page_size">
+                        <option value="25">25</option>
+                        <option value="50" selected>50</option>
+                        <option value="100">100</option>
+                        <option value="250">250</option>
+                    </select>
+                </label>
+                <div class="admin-log-actions">
+                    <button type="submit">Search</button>
+                    <button id="admin-log-clear" type="button">Clear</button>
+                </div>
+            </form>
+
+            <div class="admin-log-table-wrapper">
+                <table class="admin-log-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Event</th>
+                            <th scope="col">Specific Event</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-log-rows"></tbody>
+                </table>
+            </div>
+
+            <nav class="admin-log-pagination" aria-label="Activity log pages">
+                <button id="admin-log-prev" type="button">Previous</button>
+                <span id="admin-log-page-info"></span>
+                <button id="admin-log-next" type="button">Next</button>
+            </nav>
+        </section>
+    </main>
+</body>
+</html>

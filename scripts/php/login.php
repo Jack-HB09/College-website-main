@@ -71,6 +71,7 @@ try {
     $loginDebugStage = 'database connection';
     require_once __DIR__ . '/connection.php';
     $pdo = getDatabaseConnection();
+    require_once __DIR__ . '/helpers/event-tracking.php';
     $loginDebugStage = 'load session and rate-limit helpers';
     require_once __DIR__ . '/session-bootstrap.php';
     require_once __DIR__ . '/login-rate-limit.php';
@@ -112,6 +113,11 @@ try {
         $loginDebugStage = 'store authenticated session';
         $_SESSION['user_id'] = $user['user_id'];
         $_SESSION['username'] = $username;
+        try {
+            logEvent($pdo, (int) $user['user_id'], 1, 1);
+        } catch (Throwable $eventError) {
+            error_log('Unable to record successful login event: ' . $eventError->getMessage());
+        }
 
         $loginDebugStage = 'send successful login response';
         sendJsonResponse([
@@ -123,6 +129,13 @@ try {
     } else {
         $loginDebugStage = 'record failed login attempt';
         recordFailedLoginAttempt($pdo, $username);
+        if (is_array($user) && isset($user['user_id'])) {
+            try {
+                logEvent($pdo, (int) $user['user_id'], 1, 3);
+            } catch (Throwable $eventError) {
+                error_log('Unable to record incorrect-password event: ' . $eventError->getMessage());
+            }
+        }
         $loginDebugStage = 'send invalid credentials response';
         sendJsonResponse([
             'success' => false,

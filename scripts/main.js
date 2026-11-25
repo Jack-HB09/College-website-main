@@ -175,9 +175,10 @@ function refreshAccountAvatar(authenticated) {
     accountAvatar.src = `scripts/php/profile-picture.php?v=${Date.now()}`;
 }
 
-function setAccountState(authenticated, username = "") {
+function setAccountState(authenticated, username = "", adminAccess = false) {
     const accountButton = document.getElementById("account-button");
     const accountMenuPage = document.getElementById("account-menu-page");
+    const accountMenuAdmin = document.getElementById("account-menu-admin");
     const accountUser = document.getElementById("account-user");
     const logoutButton = document.getElementById("account-logout");
     if (!accountButton || !accountMenuPage || !accountUser || !logoutButton) {
@@ -187,6 +188,9 @@ function setAccountState(authenticated, username = "") {
     accountButton.dataset.authenticated = String(authenticated);
     accountButton.classList.toggle("is-authenticated", authenticated);
     accountMenuPage.hidden = !authenticated;
+    if (accountMenuAdmin) {
+        accountMenuAdmin.hidden = !authenticated || !adminAccess;
+    }
     accountUser.hidden = !authenticated;
     logoutButton.hidden = !authenticated;
     accountUser.textContent = authenticated ? `Signed in as ${username}` : "";
@@ -210,7 +214,11 @@ function setAccountState(authenticated, username = "") {
 }
 
 async function loadAccountState() {
-    const response = await fetch("scripts/php/session.php", {
+    const mainScript = document.querySelector('script[src*="scripts/main.js"]');
+    const sessionUrl = mainScript
+        ? new URL("php/session.php", new URL(mainScript.getAttribute("src"), document.baseURI))
+        : new URL("scripts/php/session.php", document.baseURI);
+    const response = await fetch(sessionUrl.href, {
         headers: { "Accept": "application/json" },
         cache: "no-store"
     });
@@ -223,7 +231,11 @@ async function loadAccountState() {
         throw new TypeError("The account status response was invalid.");
     }
 
-    setAccountState(result.authenticated, typeof result.username === "string" ? result.username : "");
+    setAccountState(
+        result.authenticated,
+        typeof result.username === "string" ? result.username : "",
+        result.admin_access === true
+    );
     if (!result.authenticated && document.body.classList.contains("accounts-page")) {
         window.location.replace("login.html");
     }

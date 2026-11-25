@@ -1,8 +1,12 @@
 function hasStoredCookieConsent() {
+
     return document.cookie.split(";").some(cookie => {
+
         const value = cookie.trim();
+
         return value === "site_consent=accepted" || value === "site_consent=declined";
     });
+
 }
 
 class CookieBannerNotification extends MessageNotification {

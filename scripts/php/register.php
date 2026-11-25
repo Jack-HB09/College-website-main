@@ -94,6 +94,12 @@ try {
 
     $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)");
     $stmt->execute([$username, $email, $password_hash]);
+    require_once __DIR__ . '/helpers/event-tracking.php';
+    try {
+        logEvent($pdo, (int) $pdo->lastInsertId(), 2, 1);
+    } catch (Throwable $eventError) {
+        error_log('Unable to record account-created event: ' . $eventError->getMessage());
+    }
 
     sendJsonResponse([
         'success' => true,

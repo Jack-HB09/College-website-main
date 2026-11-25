@@ -85,6 +85,21 @@ temporary throttling counters and removes the IP-address column. Do not apply
 migration 003 if the table has already been manually changed to use only
 `username_hash` as its primary key.
 
+Apply
+[`scripts/php/migrations/006_create_user_activity_events.sql`](./scripts/php/migrations/006_create_user_activity_events.sql)
+to create the event category and user activity tables. Event mappings and
+maintenance details are documented in
+[`login-documentation/docs/event-tracking.md`](./login-documentation/docs/event-tracking.md).
+
+Apply
+[`scripts/php/migrations/007_add_admin_access.sql`](./scripts/php/migrations/007_add_admin_access.sql)
+and set `admin_access = 1` for an approved database user. The administrator
+activity dashboard is documented in
+[`login-documentation/docs/activity-dashboard.md`](./login-documentation/docs/activity-dashboard.md)
+and is available at `admin/logs.html`.
+Administrators can also open it from the existing account dropdown under
+**Activity Logs**.
+
 The fixed demo account is:
 
 - Username: `test`
