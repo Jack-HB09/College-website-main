@@ -100,6 +100,11 @@ and is available at `admin/logs.html`.
 Administrators can also open it from the existing account dropdown under
 **Activity Logs**.
 
+Apply
+[`scripts/php/migrations/008_add_account_profile_fields.sql`](./scripts/php/migrations/008_add_account_profile_fields.sql)
+before using account-detail upserts if `firstname`, `lastname`, and
+`date_of_birth` are not already present in `user_infomation`.
+
 The fixed demo account is:
 
 - Username: `test`

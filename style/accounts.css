@@ -47,3 +47,92 @@ main{
     font-weight: bold;
     unicode-bidi: isolate;
 }
+#account-info{
+    display: none;
+}
+
+#account-info-form,
+.recovery-panel form {
+    display: grid;
+    gap: 8px;
+    width: 100%;
+    max-width: 420px;
+    margin: 0;
+}
+
+#account-info-form label,
+.recovery-panel label {
+    color: #333;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+#account-info-form input,
+#account-info-form select,
+.recovery-panel input,
+.recovery-panel select {
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 10px;
+    border: 1px solid #aeb5bc;
+    border-radius: 6px;
+    background: #fff;
+    color: #20242a;
+    font: inherit;
+}
+
+#account-info-form input:focus,
+#account-info-form select:focus,
+.recovery-panel input:focus,
+.recovery-panel select:focus {
+    border-color: #3795b4;
+    outline: 3px solid rgba(55, 149, 180, 0.2);
+}
+
+#account-info-form input[type="submit"],
+#account-info-form input[type="button"],
+#account-edit-button,
+.recovery-panel button {
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid #176580;
+    border-radius: 6px;
+    background: #fff;
+    color: #176580;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#account-info-form input[type="submit"]:hover,
+#account-info-form input[type="button"]:hover,
+#account-edit-button:hover,
+.recovery-panel button:hover {
+    background: #eef4f7;
+}
+
+#account-info.active{
+    display: block;
+}
+
+#account-info.active + p,
+#account-info.active + form {
+    clear: both;
+}
+
+.account-overview,
+.recovery-panel {
+    max-width: 100%;
+}
+
+@media (max-width: 760px) {
+    #account-page-body {
+        max-width: calc(100% - 20px);
+        flex-direction: column;
+    }
+
+    #account-info-form,
+    .recovery-panel form {
+        max-width: none;
+    }
+}

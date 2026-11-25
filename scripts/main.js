@@ -153,7 +153,6 @@ function refreshAccountAvatar(authenticated) {
     accountAvatar.dataset.defaultSource = defaultSource;
     accountAvatar.onerror = null;
     accountAvatar.onload = null;
-    accountAvatar.classList.remove("has-profile-picture");
 
     if (!authenticated) {
         accountAvatar.src = defaultSource;
@@ -161,18 +160,11 @@ function refreshAccountAvatar(authenticated) {
     }
 
     let usingDefault = false;
-    accountAvatar.onload = () => {
-        if (!usingDefault) {
-            accountAvatar.classList.add("has-profile-picture");
-        }
-    };
     accountAvatar.onerror = () => {
         usingDefault = true;
         accountAvatar.onerror = null;
-        accountAvatar.classList.remove("has-profile-picture");
         accountAvatar.src = defaultSource;
     };
-    accountAvatar.src = `scripts/php/profile-picture.php?v=${Date.now()}`;
 }
 
 function setAccountState(authenticated, username = "", adminAccess = false) {
@@ -183,6 +175,52 @@ function setAccountState(authenticated, username = "", adminAccess = false) {
     const logoutButton = document.getElementById("account-logout");
     if (!accountButton || !accountMenuPage || !accountUser || !logoutButton) {
         return;
+    }
+
+    if (!authenticated) {
+        document.querySelectorAll(".accounts-page form").forEach(form => {
+            form.reset();
+            form.querySelectorAll("input, textarea, select").forEach(control => {
+                if (control instanceof HTMLInputElement || control instanceof HTMLTextAreaElement) {
+                    if (["submit", "button", "reset"].includes(control.type)) {
+                        return;
+                    }
+                    control.value = "";
+                } else if (control instanceof HTMLSelectElement) {
+                    control.selectedIndex = -1;
+                }
+            });
+            form.querySelectorAll("p, span, output").forEach(element => {
+                element.textContent = "";
+            });
+        });
+
+        [
+            "account-firstname-display",
+            "account-lastname-display",
+            "account-date-of-birth-display",
+            "account-recovery-question",
+            "account-page-username"
+        ].forEach(id => {
+            const element = document.getElementById(id);
+            if (element instanceof HTMLElement) {
+                element.textContent = "";
+            }
+        });
+
+        const accountInfo = document.getElementById("account-info");
+        accountInfo?.classList.remove("active");
+        if (accountInfo instanceof HTMLElement) {
+            accountInfo.hidden = true;
+        }
+        const resetForm = document.getElementById("account-reset-password-form");
+        if (resetForm instanceof HTMLFormElement) {
+            resetForm.hidden = true;
+        }
+        const editButton = document.getElementById("account-edit-button");
+        if (editButton instanceof HTMLInputElement) {
+            editButton.value = "Edit account information";
+        }
     }
 
     accountButton.dataset.authenticated = String(authenticated);
@@ -273,12 +311,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     showProductNotification("error", "Account unavailable", "Please try again.");
                 });
 
-                window.addEventListener("profile-picture-updated", () => {
-                    const accountButton = document.getElementById("account-button");
-                    if (accountButton?.dataset.authenticated === "true") {
-                        refreshAccountAvatar(true);
-                    }
-                });
                 return;
             }
 

@@ -133,20 +133,23 @@ try {
     $pdo = getDatabaseConnection();
     $logDebug('database_connection_established');
 
-    $debugStage = 'database update';
-    $sql = 'UPDATE user_infomation '
-        . 'SET firstname = :firstname, lastname = :lastname, date_of_birth = :date_of_birth '
-        . 'WHERE user_id = :user_id';
+    $debugStage = 'database profile upsert';
+    $sql = 'INSERT INTO user_infomation (user_id, firstname, lastname, date_of_birth) '
+        . 'VALUES (?, ?, ?, ?) '
+        . 'ON DUPLICATE KEY UPDATE firstname = ?, lastname = ?, date_of_birth = ?';
     $statement = $pdo->prepare($sql);
     $logDebug('database_statement_prepared');
 
     $statement->execute([
-        ':firstname' => $firstname,
-        ':lastname' => $lastname,
-        ':date_of_birth' => $dateOfBirth,
-        ':user_id' => $userId,
+        $userId,
+        $firstname,
+        $lastname,
+        $dateOfBirth,
+        $firstname,
+        $lastname,
+        $dateOfBirth,
     ]);
-    $logDebug('database_update_completed', ['affected_rows' => $statement->rowCount()]);
+    $logDebug('database_upsert_completed', ['affected_rows' => $statement->rowCount()]);
     require_once __DIR__ . '/helpers/event-tracking.php';
     try {
         logEvent($pdo, $userId, 2, 3);

@@ -70,11 +70,12 @@ registerForm.addEventListener("submit", async event => {
         const data = await response.json();
 
         if (data.success) {
-            showRegistrationNotification(
+            await showRegistrationNotification(
                 "success",
                 "Registration Successful",
-                data.message || "You have been registered successfully."
+                data.message || "You have been registered successfully.", 700
             );
+
         } else {
             showRegistrationNotification(
                 "error",

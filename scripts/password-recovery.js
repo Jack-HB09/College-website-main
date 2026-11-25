@@ -72,6 +72,27 @@ function findSubmitButton(form) {
     return button;
 }
 
+function clearHiddenAccountForm(form) {
+    if (!(form instanceof HTMLFormElement)) {
+        return;
+    }
+
+    form.reset();
+    for (const control of form.elements) {
+        if (control instanceof HTMLInputElement || control instanceof HTMLTextAreaElement) {
+            if (["submit", "button", "reset"].includes(control.type)) {
+                continue;
+            }
+            control.value = "";
+        } else if (control instanceof HTMLSelectElement) {
+            control.selectedIndex = -1;
+        }
+    }
+    for (const textElement of form.querySelectorAll("p, span, output")) {
+        textElement.textContent = "";
+    }
+}
+
 function validateRecoveryForm(form) {
     const invalidControl = Array.from(form.elements).find(control => (
         (control instanceof HTMLInputElement || control instanceof HTMLSelectElement)
@@ -215,6 +236,7 @@ function initializeAccountPasswordReset() {
     toggleButton.addEventListener("click", async () => {
         if (!form.hidden) {
             form.hidden = true;
+            clearHiddenAccountForm(form);
             return;
         }
 
@@ -269,6 +291,14 @@ function initializeLoginPasswordReset() {
     toggleButton.addEventListener("click", () => {
         panel.hidden = !panel.hidden;
         toggleButton.setAttribute("aria-expanded", String(!panel.hidden));
+        if (panel.hidden) {
+            clearHiddenAccountForm(emailForm);
+            clearHiddenAccountForm(resetForm);
+            const questionContainer = document.getElementById("reset-recovery-question");
+            if (questionContainer instanceof HTMLElement) {
+                questionContainer.textContent = "";
+            }
+        }
     });
 
     emailForm.addEventListener("submit", async event => {
