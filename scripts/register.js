@@ -5,7 +5,7 @@ const passwordInput = document.getElementById("password");
 const confirmPasswordInput = document.getElementById("confirm-password");
 const messageContainer = document.getElementById("login-messages");
 const registrationEndpoint = new URL("php/register.php", document.currentScript.src);
-
+const loginEndpoint = new URL("php/login.php", document.currentScript.src);
 function showRegistrationNotification(type, title, content) {
     new MessageNotification({
         type,
@@ -75,7 +75,38 @@ registerForm.addEventListener("submit", async event => {
                 "Registration Successful",
                 data.message || "You have been registered successfully.", 700
             );
+            const loginResponse = await fetch(loginEndpoint, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        username: usernameInput.value.trim(),
+        password: passwordInput.value
+    })
+});
 
+const loginData = await loginResponse.json();
+
+if (loginResponse.ok && loginData.success) {
+    const redirectDelay = 700;
+
+    showRegistrationNotification(
+        "success",
+        "Registration Successful",
+        "Account created and logged in successfully."
+    );
+
+    window.setTimeout(() => {
+        window.location.assign("products.html");
+    }, redirectDelay);
+} else {
+    showRegistrationNotification(
+        "success",
+        "Registration Successful",
+        "Your account was created, but automatic login failed. Please log in manually."
+    );
+}
         } else {
             showRegistrationNotification(
                 "error",
