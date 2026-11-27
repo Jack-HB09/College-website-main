@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="50" viewBox="0 0 300 50">
+    <defs>
+        <path id="star" d="M30 3 35.29 17.72 50.92 18.21 38.56 30.56 42.94 42.8 30 34 17.06 42.8 21.44 30.56 9.08 18.21 24.71 17.72Z"/>
+        <mask id="star-cutouts" maskUnits="userSpaceOnUse" x="0" y="0" width="300" height="50">
+            <rect width="300" height="50" fill="white"/>
+            <use href="#star" fill="black"/>
+            <use href="#star" transform="translate(60 0)" fill="black"/>
+            <use href="#star" transform="translate(120 0)" fill="black"/>
+            <use href="#star" transform="translate(180 0)" fill="black"/>
+            <use href="#star" transform="translate(240 0)" fill="black"/>
+        </mask>
+    </defs>
+    <rect width="300" height="50" fill="white" mask="url(#star-cutouts)"/>
+</svg>
