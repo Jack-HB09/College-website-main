@@ -199,6 +199,7 @@ function setAccountState(authenticated, username = "", adminAccess = false) {
             "account-firstname-display",
             "account-lastname-display",
             "account-date-of-birth-display",
+            "account-info-save-status",
             "account-recovery-question",
             "account-page-username"
         ].forEach(id => {
@@ -207,19 +208,11 @@ function setAccountState(authenticated, username = "", adminAccess = false) {
                 element.textContent = "";
             }
         });
+        window.dispatchEvent(new Event("account-session-ended"));
 
-        const accountInfo = document.getElementById("account-info");
-        accountInfo?.classList.remove("active");
-        if (accountInfo instanceof HTMLElement) {
-            accountInfo.hidden = true;
-        }
         const resetForm = document.getElementById("account-reset-password-form");
         if (resetForm instanceof HTMLFormElement) {
             resetForm.hidden = true;
-        }
-        const editButton = document.getElementById("account-edit-button");
-        if (editButton instanceof HTMLInputElement) {
-            editButton.value = "Edit account information";
         }
     }
 

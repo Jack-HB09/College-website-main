@@ -47,11 +47,7 @@ main{
     font-weight: bold;
     unicode-bidi: isolate;
 }
-#account-info{
-    display: none;
-}
-
-#account-info-form,
+#account-info,
 .recovery-panel form {
     display: grid;
     gap: 8px;
@@ -60,15 +56,12 @@ main{
     margin: 0;
 }
 
-#account-info-form label,
 .recovery-panel label {
     color: #333;
     font-size: 1rem;
     font-weight: 700;
 }
 
-#account-info-form input,
-#account-info-form select,
 .recovery-panel input,
 .recovery-panel select {
     width: 100%;
@@ -81,17 +74,12 @@ main{
     font: inherit;
 }
 
-#account-info-form input:focus,
-#account-info-form select:focus,
 .recovery-panel input:focus,
 .recovery-panel select:focus {
     border-color: #3795b4;
     outline: 3px solid rgba(55, 149, 180, 0.2);
 }
 
-#account-info-form input[type="submit"],
-#account-info-form input[type="button"],
-#account-edit-button,
 .recovery-panel button {
     min-height: 44px;
     padding: 8px 12px;
@@ -104,20 +92,38 @@ main{
     cursor: pointer;
 }
 
-#account-info-form input[type="submit"]:hover,
-#account-info-form input[type="button"]:hover,
-#account-edit-button:hover,
 .recovery-panel button:hover {
     background: #eef4f7;
 }
 
-#account-info.active{
-    display: block;
+.account-info-fields p {
+    margin: 0;
 }
 
-#account-info.active + p,
-#account-info.active + form {
-    clear: both;
+.account-editable {
+    display: inline-block;
+    min-width: 180px;
+    min-height: 1.5em;
+    padding: 2px 6px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    vertical-align: baseline;
+}
+
+.account-editable:empty::before {
+    color: #78818a;
+    content: attr(data-placeholder);
+}
+
+.account-editable:focus {
+    border-color: #3795b4;
+    outline: 3px solid rgba(55, 149, 180, 0.2);
+}
+
+.account-save-status {
+    min-height: 1.5em;
+    color: #46515b;
+    font-size: 0.9rem;
 }
 
 .account-overview,
@@ -131,7 +137,7 @@ main{
         flex-direction: column;
     }
 
-    #account-info-form,
+    #account-info,
     .recovery-panel form {
         max-width: none;
     }

@@ -40,4 +40,9 @@ sendJsonResponse([
     'authenticated' => is_string($username),
     'username' => is_string($username) ? $username : null,
     'admin_access' => $adminAccess,
+    'session_diagnostics' => [
+        'cookie_received' => isset($_COOKIE[session_name()]),
+        'user_id_present' => isset($_SESSION['user_id']),
+        'username_present' => isset($_SESSION['username']),
+    ],
 ]);

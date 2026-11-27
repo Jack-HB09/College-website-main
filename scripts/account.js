@@ -1,25 +1,18 @@
 const messageContainer = document.getElementById("message");
-document.getElementById("account-date-of-birth").max = new Date().toISOString().split("T")[0];
 
 async function displayAccountInfo() {
-    let  accountData = {};
-    try{
-        const responce = await fetch("scripts/php/getaccount.php", {
+    try {
+        const response = await fetch("scripts/php/getaccount.php", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
             },
-            credentials: "same-origin" // Ensures PHP session cookies are sent
+            credentials: "same-origin",
+            cache: "no-store"
         });
 
-        const result = await responce.json();
-        console.log(result);
-
-        if (responce.ok && result.success) {
-            accountData = result.userdata;
-            console.log(accountData.firstname);
-        }else{
-            accountData = null;
+        const result = await response.json();
+        if (!response.ok || !result.success || !result.userdata) {
             showNotification(
                 "error",
                 "Failed to Load Profile",
@@ -28,12 +21,10 @@ async function displayAccountInfo() {
             return;
         }
 
-            document.getElementById("account-firstname-display").textContent  = accountData.firstname || "";
-    document.getElementById("account-lastname-display").textContent  = accountData.lastname || "";
-    //document.getElementById("account-email-display").textContent  = accountData.email || "";
-    document.getElementById("account-date-of-birth-display").textContent  = accountData.date_of_birth || "";
-
-    }catch(error){
+        document.getElementById("account-firstname-display").textContent = result.userdata.firstname || "";
+        document.getElementById("account-lastname-display").textContent = result.userdata.lastname || "";
+        document.getElementById("account-date-of-birth-display").textContent = result.userdata.date_of_birth || "";
+    } catch (error) {
         console.error("Profile update request failed:", error);
         showNotification(
             "error",
@@ -41,18 +32,6 @@ async function displayAccountInfo() {
             "Could not connect to the server. Please try again."
         );
     }
-
-
-
-}
-
-function getformData() {
-    const formData = new FormData(document.getElementById("account-info-form"));
-    const data = {};
-    for (const [key, value] of formData.entries()) {
-        data[key] = value;
-    }
-    return data;
 }
 
 function showNotification(type, title, content, duration = 4000) {
@@ -64,50 +43,63 @@ function showNotification(type, title, content, duration = 4000) {
     }, messageContainer).show();
 }
 
-function clearAccountForm(form) {
-    if (!(form instanceof HTMLFormElement)) {
+const accountInfo = document.getElementById("account-info");
+const accountInfoStatus = document.getElementById("account-info-save-status");
+const accountFields = Array.from(accountInfo.querySelectorAll("[data-field]"));
+let saveTimer = null;
+let isSaving = false;
+let saveAgain = false;
+let changeVersion = 0;
+
+function getAccountInfoPayload() {
+    return Object.fromEntries(accountFields.map(field => [
+        field.dataset.field,
+        field.textContent.trim()
+    ]));
+}
+
+function isValidDateOfBirth(value) {
+    if (value === "") {
+        return true;
+    }
+
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if (!match) {
+        return false;
+    }
+
+    const [, yearText, monthText, dayText] = match;
+    const date = new Date(0);
+    date.setUTCHours(0, 0, 0, 0);
+    date.setUTCFullYear(Number(yearText), Number(monthText) - 1, Number(dayText));
+    return date.getUTCFullYear() === Number(yearText)
+        && date.getUTCMonth() === Number(monthText) - 1
+        && date.getUTCDate() === Number(dayText);
+}
+
+function queueAccountInfoSave() {
+    changeVersion += 1;
+    accountInfoStatus.textContent = "Unsaved changes";
+    window.clearTimeout(saveTimer);
+    saveTimer = window.setTimeout(saveAccountInfo, 800);
+}
+
+async function saveAccountInfo() {
+    if (isSaving) {
+        saveAgain = true;
         return;
     }
 
-    form.reset();
-
-    for (const control of form.elements) {
-        if (control instanceof HTMLInputElement || control instanceof HTMLTextAreaElement) {
-            if (["submit", "button", "reset"].includes(control.type)) {
-                continue;
-            }
-            control.value = "";
-        } else if (control instanceof HTMLSelectElement) {
-            control.selectedIndex = -1;
-        }
+    const payload = getAccountInfoPayload();
+    if (!isValidDateOfBirth(payload.date_of_birth)) {
+        accountInfoStatus.textContent = "Use YYYY-MM-DD for the date of birth.";
+        return;
     }
 
-    for (const textElement of form.querySelectorAll("p, span, output")) {
-        textElement.textContent = "";
-    }
-
-    document.getElementById("account-date-of-birth").max = new Date().toISOString().split("T")[0];
-}
-
-function hideAccountForm(form, container = form) {
-    clearAccountForm(form);
-    if (container instanceof HTMLElement) {
-        container.hidden = true;
-        container.classList.remove("active");
-    }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    displayAccountInfo();
-});
-
-document.getElementById("account-info-form").addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const submitBtn = event.target.querySelector('button[type="submit"]');
-    if (submitBtn) submitBtn.disabled = true;
-
-    const formData = getformData();
+    const savedVersion = changeVersion;
+    isSaving = true;
+    saveAgain = false;
+    accountInfoStatus.textContent = "Saving...";
 
     try {
         const response = await fetch("scripts/php/updateaccount.php", {
@@ -115,61 +107,44 @@ document.getElementById("account-info-form").addEventListener("submit", async (e
             headers: {
                 "Content-Type": "application/json"
             },
-            credentials: "same-origin", // Ensures PHP session cookies are sent
-            body: JSON.stringify(formData)
+            credentials: "same-origin",
+            body: JSON.stringify(payload)
         });
 
         const result = await response.json();
+        if (!response.ok || !result.success) {
+            throw new Error(result.message || "Profile update failed.");
+        }
 
-        console.log(result);
-
-        if (response.ok && result.success) {
-            showNotification(
-                "success",
-                "Profile Updated",
-                result.message || "Your profile has been updated successfully."
-            );
-            hideAccountForm(accountInfoForm, accountInfoContainer);
-            accountEditButton.value = "Edit account information";
-            await displayAccountInfo();
-        } else {
-            showNotification(
-                "error",
-                "Update Failed",
-                result.message || "Failed to update profile."
-            );
+        if (changeVersion === savedVersion) {
+            accountInfoStatus.textContent = "Changes saved.";
         }
     } catch (error) {
-        console.error("Profile update request failed:", error);
-        showNotification(
-            "error",
-            "Network Error",
-            "Could not connect to the server. Please try again."
-        );
+        console.error("Unable to save profile information.", error);
+        accountInfoStatus.textContent = error.message || "Changes could not be saved.";
     } finally {
-        if (submitBtn) submitBtn.disabled = false;
+        isSaving = false;
+        if (saveAgain || changeVersion !== savedVersion) {
+            saveAgain = false;
+            window.clearTimeout(saveTimer);
+            saveTimer = window.setTimeout(saveAccountInfo, 250);
+        }
     }
+}
+
+accountFields.forEach(field => {
+    field.addEventListener("input", queueAccountInfoSave);
+    field.addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            field.blur();
+        }
+    });
 });
 
-const accountEditButton = document.getElementById("account-edit-button");
-const accountInfoContainer = document.getElementById("account-info");
-const accountInfoForm = document.getElementById("account-info-form");
-
-accountEditButton.addEventListener("click", () => {
-    if (accountInfoContainer.classList.contains("active")) {
-        hideAccountForm(accountInfoForm, accountInfoContainer);
-        accountEditButton.value = "Edit account information";
-        return;
-    }
-
-    accountInfoContainer.classList.add("active");
-    accountInfoContainer.hidden = false;
-    accountEditButton.value = "Cancel editing";
-
-    document.getElementById("account-firstname").value =
-        document.getElementById("account-firstname-display").textContent;
-    document.getElementById("account-lastname").value =
-        document.getElementById("account-lastname-display").textContent;
-    document.getElementById("account-date-of-birth").value =
-        document.getElementById("account-date-of-birth-display").textContent;
+window.addEventListener("account-session-ended", () => {
+    window.clearTimeout(saveTimer);
+    saveTimer = null;
 });
+
+document.addEventListener("DOMContentLoaded", displayAccountInfo);

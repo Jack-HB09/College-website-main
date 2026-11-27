@@ -63,22 +63,11 @@
         <p id="account-page-loading" role="status">Checking your account...</p>
         <section id="account-page-signed-in" class="account-overview" aria-labelledby="account-overview-heading" hidden>
             <h2 id="account-overview-heading">Account overview</h2>
-            <div id="account-info-display">
-                <p><strong>First name:</strong> <span id="account-firstname-display"></span></p>
-                <p><strong>Last name:</strong> <span id="account-lastname-display"></span></p>
-                <p><strong>Date of birth:</strong> <span id="account-date-of-birth-display"></span></p>
-                <input id="account-edit-button" type="button" value="Edit account information">
-            </div>
-            <div id="account-info" class="hidden">
-                <form id="account-info-form">
-                    <label for="account-firstname">First name</label>
-                    <input id="account-firstname" name="first_name" type="text">
-                    </br><label for="account-lastname">Last name</label>
-                    <input id="account-lastname" name="last_name" type="text">
-                    </br><label for="account-date-of-birth">Date of birth</label>
-                    <input id="account-date-of-birth" name="date_of_birth" type="date" max="2024-06-01" >
-                </br><input id="submit-btn" type="submit" value="Update Profile">
-            </form>
+            <div id="account-info" class="account-info-fields">
+                <p><strong>First name:</strong> <span id="account-firstname-display" class="account-editable" data-field="first_name" data-placeholder="Add first name" contenteditable="true" role="textbox" aria-label="First name" spellcheck="false"></span></p>
+                <p><strong>Last name:</strong> <span id="account-lastname-display" class="account-editable" data-field="last_name" data-placeholder="Add last name" contenteditable="true" role="textbox" aria-label="Last name" spellcheck="false"></span></p>
+                <p><strong>Date of birth:</strong> <span id="account-date-of-birth-display" class="account-editable" data-field="date_of_birth" data-placeholder="YYYY-MM-DD" contenteditable="true" role="textbox" aria-label="Date of birth, use YYYY-MM-DD" spellcheck="false"></span></p>
+                <p id="account-info-save-status" class="account-save-status" role="status" aria-live="polite"></p>
             </div>
 
             <p>You are signed in as <strong id="account-page-username"></strong>.</p>

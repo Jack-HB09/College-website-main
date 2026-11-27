@@ -120,6 +120,28 @@ try {
         : '';
     if ($dateOfBirth === '') {
         $dateOfBirth = null;
+    } elseif (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $dateOfBirth, $dateParts) !== 1
+        || !checkdate((int) $dateParts[2], (int) $dateParts[3], (int) $dateParts[1])) {
+        sendJsonResponse([
+            'success' => false,
+            'status' => 'error',
+            'message' => 'Enter a valid date of birth in YYYY-MM-DD format.',
+            'debug_id' => $debugId,
+        ], 400);
+        exit;
+    }
+
+    $firstNameLength = preg_match_all('/./us', $firstname);
+    $lastNameLength = preg_match_all('/./us', $lastname);
+    if ($firstNameLength === false || $lastNameLength === false
+        || $firstNameLength > 100 || $lastNameLength > 100) {
+        sendJsonResponse([
+            'success' => false,
+            'status' => 'error',
+            'message' => 'Names must be 100 characters or fewer.',
+            'debug_id' => $debugId,
+        ], 400);
+        exit;
     }
 
     $logDebug('input_normalized', [

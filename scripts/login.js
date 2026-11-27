@@ -48,6 +48,8 @@ loginForm.addEventListener("submit", async event => {
             headers: {
                 "Content-Type": "application/json",
             },
+            credentials: "same-origin",
+            cache: "no-store",
             body: JSON.stringify({
                 username: usernameInput.value.trim(),
                 password: passwordInput.value
@@ -103,6 +105,29 @@ loginForm.addEventListener("submit", async event => {
                 typeof result.message === "string"
                     ? result.message
                     : "The login handler returned an unexpected response."
+            );
+            return;
+        }
+
+        const sessionResponse = await fetch(new URL("session.php", loginEndpoint), {
+            headers: { "Accept": "application/json" },
+            credentials: "same-origin",
+            cache: "no-store"
+        });
+        const sessionStatus = await sessionResponse.json();
+        if (!sessionResponse.ok || sessionStatus.authenticated !== true) {
+            const cookieReceived = sessionStatus.session_diagnostics?.cookie_received === true;
+            console.error("Login succeeded but the authenticated session was not retained.", {
+                sessionStatus: sessionResponse.status,
+                diagnostics: sessionStatus.session_diagnostics
+            });
+            passwordInput.value = "";
+            showLoginNotification(
+                "error",
+                "Session not established",
+                cookieReceived
+                    ? "The server received a session cookie but could not find the signed-in session. Please contact the site administrator."
+                    : "The browser did not send the PHP session cookie. Make sure login and the site use the same address."
             );
             return;
         }

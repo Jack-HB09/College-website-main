@@ -54,16 +54,34 @@ $logDebug('request_received', [
     'content_type' => $_SERVER['CONTENT_TYPE'] ?? 'missing',
 ]);
 try {
+    $userId = filter_var(
+        $_SESSION['user_id'] ?? null,
+        FILTER_VALIDATE_INT,
+        ['options' => ['min_range' => 1]]
+    );
+    if ($userId === false) {
+        sendJsonResponse([
+            'success' => false,
+            'message' => 'Please sign in to view account information.',
+            'userdata' => null
+        ], 401);
+        exit;
+    }
+
     require_once __DIR__ . '/connection.php';
     $pdo = getDatabaseConnection();
-    $stmt = $pdo->prepare('SELECT * FROM user_infomation where user_id = ? LIMIT 1');
-    $stmt->execute([$_SESSION['user_id'] ?? null]);
+    $stmt = $pdo->prepare(
+        'SELECT firstname, lastname, date_of_birth FROM user_infomation WHERE user_id = ? LIMIT 1'
+    );
+    $stmt->execute([(int) $userId]);
     $userdata = $stmt->fetch();
-    if ($userdata !== null) {
-        sendJsonResponse(['success' => true, 'userdata' => $userdata, 'message' => 'User data retrieved successfully.']);
-    } else {
-        sendJsonResponse(['success' => false, 'message' => 'User not found.', 'userdata' => null], 404);
-    }
+    sendJsonResponse([
+        'success' => true,
+        'userdata' => $userdata === false
+            ? ['firstname' => '', 'lastname' => '', 'date_of_birth' => '']
+            : $userdata,
+        'message' => 'User data retrieved successfully.'
+    ]);
 }catch (Throwable $e) {
     $logDebug('database_error', ['error_message' => $e->getMessage()]);
     sendJsonResponse(['success' => false, 'message' => 'Unable to retrieve account information.', 'userdata' => null], 500);

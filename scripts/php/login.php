@@ -119,6 +119,10 @@ try {
             error_log('Unable to record successful login event: ' . $eventError->getMessage());
         }
 
+        if (session_status() === PHP_SESSION_ACTIVE && !session_write_close()) {
+            throw new RuntimeException('Unable to persist the authenticated session.');
+        }
+
         $loginDebugStage = 'send successful login response';
         sendJsonResponse([
             'success' => true,
