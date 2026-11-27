@@ -148,3 +148,5 @@ window.addEventListener("account-session-ended", () => {
 });
 
 document.addEventListener("DOMContentLoaded", displayAccountInfo);
+
+document.getElementById("account-info-save-button").addEventListener("click", saveAccountInfo);

@@ -121,7 +121,6 @@ main{
 }
 
 .account-save-status {
-    min-height: 1.5em;
     color: #46515b;
     font-size: 0.9rem;
 }
@@ -141,4 +140,9 @@ main{
     .recovery-panel form {
         max-width: none;
     }
+}
+#account-info-save-button{
+    margin-bottom: 12px;
+    margin-top: 12px;
+    border: 1px solid #176580;
 }

@@ -63,14 +63,17 @@
         <p id="account-page-loading" role="status">Checking your account...</p>
         <section id="account-page-signed-in" class="account-overview" aria-labelledby="account-overview-heading" hidden>
             <h2 id="account-overview-heading">Account overview</h2>
+            <p>You are signed in as <strong id="account-page-username"></strong>.</p>
+
             <div id="account-info" class="account-info-fields">
                 <p><strong>First name:</strong> <span id="account-firstname-display" class="account-editable" data-field="first_name" data-placeholder="Add first name" contenteditable="true" role="textbox" aria-label="First name" spellcheck="false"></span></p>
                 <p><strong>Last name:</strong> <span id="account-lastname-display" class="account-editable" data-field="last_name" data-placeholder="Add last name" contenteditable="true" role="textbox" aria-label="Last name" spellcheck="false"></span></p>
                 <p><strong>Date of birth:</strong> <span id="account-date-of-birth-display" class="account-editable" data-field="date_of_birth" data-placeholder="YYYY-MM-DD" contenteditable="true" role="textbox" aria-label="Date of birth, use YYYY-MM-DD" spellcheck="false"></span></p>
                 <p id="account-info-save-status" class="account-save-status" role="status" aria-live="polite"></p>
+                <button id="account-info-save-button" type="button">Save changes</button>
             </div>
 
-            <p>You are signed in as <strong id="account-page-username"></strong>.</p>
+            
             <button id="account-page-logout" type="button">Sign out</button>
             <section class="recovery-panel" aria-labelledby="security-question-heading">
                 <h2 id="security-question-heading">Password recovery</h2>
